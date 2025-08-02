@@ -1,42 +1,29 @@
 {
   "expo": {
+    "sdkVersion": "53.0.0",
     "name": "NovaNews",
-    "slug": "NovaNews",
+    "slug": "nova-news",
     "version": "1.0.0",
+    "platforms": ["ios", "android", "web"],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "novanews",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "entryPoint": "node_modules/expo/AppEntry.js",
+    "extra": { "newsApiKey": "006454cfe65e49efa1e9e9b72052ec56" },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFFFF"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
       "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
     }
   }
 }

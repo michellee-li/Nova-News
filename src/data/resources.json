@@ -1,0 +1,14 @@
+[
+  {
+    "id": "hotline",
+    "title": "National Domestic Violence Hotline",
+    "category": "Hotlines",
+    "url": "https://www.thehotline.org"
+  },
+  {
+    "id": "legal-aid",
+    "title": "Legal Aid",
+    "category": "Legal",
+    "url": "https://www.lsc.gov"
+  }
+]
