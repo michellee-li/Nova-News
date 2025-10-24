@@ -5,9 +5,19 @@ node_modules/
 
 # Expo
 .expo/
+.expo-shared/
 dist/
+build/
 web-build/
 expo-env.d.ts
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# Expo debug logs
+*.log
 
 # Native
 .kotlin/
@@ -29,9 +39,27 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
+.AppleDouble
+.LSOverride
+
+# OS / editor
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+
+# Python backend
+__pycache__/
+*.pyc
+.venv/
+.envrc
 
 # local env files
 .env*.local
+
+# env files
+.env
+.env.*
+!.env.example
 
 # typescript
 *.tsbuildinfo

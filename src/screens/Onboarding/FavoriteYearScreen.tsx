@@ -1,9 +1,11 @@
 // src/screens/Onboarding/FavoriteYearScreen.tsx
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 import { StackScreenProps } from '@react-navigation/stack';
+import * as SecureStore from 'expo-secure-store';
+import React, { useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { OnboardingParamList } from '../../navigation/OnboardingNavigator';
+
+console.log('*** in FavoriteYearScreen.tsx ***');
 
 type Props = StackScreenProps<OnboardingParamList,'FavoriteYear'>;
 

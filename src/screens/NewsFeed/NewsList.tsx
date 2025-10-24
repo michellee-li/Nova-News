@@ -1,31 +1,30 @@
 // src/screens/NewsFeed/NewsList.tsx
 
-import React, { useState, useEffect } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Button,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
-import * as SecureStore   from 'expo-secure-store';
-import { Ionicons }       from '@expo/vector-icons';
-import Constants          from 'expo-constants';
+import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from '../../navigation/AppNavigator';
+
+console.log('*** in NewsList.tsx ***');
 
 type Props = StackScreenProps<RootStackParamList, 'NewsList'>;
 type Article = { title: string; publishedAt: string; url: string; urlToImage?: string };
 
-// Pull your key from app.json → expo.extra.newsApiKey
-const NEWS_API_KEY =
-  Constants.manifest?.extra?.newsApiKey ||
-  (Constants.expoConfig as any)?.extra?.newsApiKey;
+// Pull your key from environment variables
+const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
 export default function NewsList({ navigation }: Props) {
   const [articles,   setArticles] = useState<Article[]>([]);
@@ -82,6 +81,12 @@ export default function NewsList({ navigation }: Props) {
     );
   }
 
+  const BASE_URL = "https://nova-news.ngrok.app";
+  fetch(`${BASE_URL}/api/news?country=us&pageSize=50`)
+  .then(res => res.json())
+  .then(json => setArticles(json.articles));
+
+
   // Decoy filter
   const displayed = decoyYear
     ? articles.filter(a =>
@@ -102,7 +107,7 @@ export default function NewsList({ navigation }: Props) {
       {/* Header */}
       <SafeAreaView style={styles.header}>
         <Text style={styles.headerTitle}>Nova News</Text>
-        <TouchableOpacity onLongPress={() => setModalVis(true)}>
+        <TouchableOpacity onPress={() => navigation.navigate('PinLogin')}>
           <Ionicons name="lock-closed" size={24} color="#333" />
         </TouchableOpacity>
       </SafeAreaView>

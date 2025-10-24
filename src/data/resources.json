@@ -1,14 +1,146 @@
 [
   {
-    "id": "hotline",
-    "title": "National Domestic Violence Hotline",
-    "category": "Hotlines",
-    "url": "https://www.thehotline.org"
+    "id": "1",
+    "title": "AnnualCreditReport.com – Free Credit Report Access",
+    "category": "Credit Repair",
+    "url": "https://www.annualcreditreport.com/index.action",
+    "description": "Request free reports from all three credit bureaus safely once per year.",
+    "featured": true
   },
   {
-    "id": "legal-aid",
-    "title": "Legal Aid",
-    "category": "Legal",
-    "url": "https://www.lsc.gov"
+    "id": "2",
+    "title": "CreditStrong – Credit Builder Loan",
+    "category": "Credit Repair",
+    "url": "https://www.creditstrong.com/",
+    "description": "Build or rebuild credit through small secured installment loans."
+  },
+  {
+    "id": "3",
+    "title": "Self Financial – Build Credit and Save",
+    "category": "Credit Repair",
+    "url": "https://www.self.inc/",
+    "description": "A safe credit-builder account that reports monthly payments to major bureaus."
+  },
+  {
+    "id": "4",
+    "title": "Deloitte Reconnect Program",
+    "category": "Jobs",
+    "url": "https://www.deloitte.com/us/en/careers/reconnect.html",
+    "description": "A returnship program helping professionals re-enter the workforce.",
+    "featured": true
+  },
+  {
+    "id": "5",
+    "title": "IBM Tech Re-Entry Program",
+    "category": "Jobs",
+    "url": "https://www.ibm.com/employment/techreentry/",
+    "description": "Paid internships for experienced professionals resuming careers in tech."
+  },
+  {
+    "id": "6",
+    "title": "Return Utah",
+    "category": "Jobs",
+    "url": "https://returnutah.org/",
+    "description": "Utah’s statewide initiative offering paid returnships to help adults rejoin the workforce."
+  },
+  {
+    "id": "7",
+    "title": "Path Forward Returnships",
+    "category": "Jobs",
+    "url": "https://pathforward.org/",
+    "description": "Connects caregivers re-entering the workforce with top employers."
+  },
+  {
+    "id": "8",
+    "title": "HUD Housing Choice Voucher Program (Section 8)",
+    "category": "Housing",
+    "url": "https://www.hud.gov/topics/housing_choice_voucher_program_section_8",
+    "description": "Provides rent assistance for low-income families to find safe housing.",
+    "featured": true
+  },
+  {
+    "id": "9",
+    "title": "Texas Rent Relief Program",
+    "category": "Housing",
+    "url": "https://texasrentrelief.com/",
+    "description": "Offers emergency financial assistance for rent and utilities."
+  },
+  {
+    "id": "10",
+    "title": "National Domestic Violence Hotline – Housing Support",
+    "category": "Housing",
+    "url": "https://www.thehotline.org/resources/housing/",
+    "description": "Helps survivors locate transitional and safe housing programs nationwide."
+  },
+  {
+    "id": "11",
+    "title": "Allstate Foundation Moving Ahead Grant",
+    "category": "Grants",
+    "url": "https://allstatefoundation.org/what-we-do/economic-empowerment/",
+    "description": "Funds financial empowerment programs for survivors of domestic violence.",
+    "featured": true
+  },
+  {
+    "id": "12",
+    "title": "Women’s Independence Scholarship Program (WISP)",
+    "category": "Grants",
+    "url": "https://wispinc.org/",
+    "description": "Provides scholarships for survivors of intimate partner abuse pursuing education."
+  },
+  {
+    "id": "13",
+    "title": "Modest Needs Foundation",
+    "category": "Grants",
+    "url": "https://www.modestneeds.org/",
+    "description": "Grants that help working individuals meet short-term emergency expenses."
+  },
+  {
+    "id": "14",
+    "title": "Texas WIC Program",
+    "category": "Child Support",
+    "url": "https://texaswic.org/",
+    "description": "Offers nutrition, education, and food benefits for women and children."
+  },
+  {
+    "id": "15",
+    "title": "Texas Child Support Division",
+    "category": "Child Support",
+    "url": "https://www.texasattorneygeneral.gov/child-support",
+    "description": "Guidance for applying, managing, and enforcing child support orders."
+  },
+  {
+    "id": "16",
+    "title": "Child Care Assistance Program (CCAP)",
+    "category": "Child Support",
+    "url": "https://www.twc.texas.gov/programs/child-care-services-program-overview",
+    "description": "Subsidized child care for low-income families to help parents work or study."
+  },
+  {
+    "id": "17",
+    "title": "National Association of Personal Financial Advisors (Pro Bono)",
+    "category": "Planners Map",
+    "url": "https://www.napfa.org/consumers/find-an-advisor",
+    "description": "Search for fee-only financial planners offering free or low-cost services."
+  },
+  {
+    "id": "18",
+    "title": "Foundation for Financial Planning",
+    "category": "Planners Map",
+    "url": "https://foundationforfinancialplanning.org/",
+    "description": "Connects vulnerable populations with volunteer CFP professionals."
+  },
+  {
+    "id": "19",
+    "title": "Savvy Ladies Free Financial Helpline",
+    "category": "Planners Map",
+    "url": "https://www.savvyladies.org/free-financial-helpline/",
+    "description": "Free 1-on-1 advice sessions with certified financial experts for women."
+  },
+  {
+    "id": "20",
+    "title": "Local United Way 211",
+    "category": "Planners Map",
+    "url": "https://211.org/",
+    "description": "Nationwide directory for financial, housing, and food resources in your ZIP code."
   }
 ]

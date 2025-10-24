@@ -1,8 +1,10 @@
 // src/screens/Onboarding/WelcomeScreen.tsx
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
+import React from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { OnboardingParamList } from '../../navigation/OnboardingNavigator';
+
+console.log('*** in WelcomeScreen.tsx ***');
 
 type Props = StackScreenProps<OnboardingParamList,'Welcome'>;
 
@@ -11,9 +13,9 @@ export default function WelcomeScreen({ navigation }: Props) {
     <View style={styles.container}>
       <Text style={styles.header}>Welcome to Nova News</Text>
       <Text style={styles.body}>
-        This app hides a private finance section behind a PIN.
+        This app hides a private finance section.
       </Text>
-      <Button title="Get Started" onPress={() => navigation.navigate('FavoriteYear')} />
+      <Button title="Get Started" onPress={() => navigation.navigate('Finish')} />
     </View>
   );
 }

@@ -1,10 +1,12 @@
 // src/screens/NewsFeed/WebviewScreen.tsx
 
-import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { WebView } from 'react-native-webview';
 import { StackScreenProps } from '@react-navigation/stack';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+
+console.log('*** in WebviewScreen.tsx ***');
 
 type Props = StackScreenProps<RootStackParamList, 'WebviewScreen'>;
 

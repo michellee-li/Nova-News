@@ -1,20 +1,39 @@
 {
   "expo": {
-    "sdkVersion": "53.0.0",
     "name": "NovaNews",
     "slug": "nova-news",
     "version": "1.0.0",
-    "platforms": ["ios", "android", "web"],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "novanews",
     "userInterfaceStyle": "automatic",
     "entryPoint": "node_modules/expo/AppEntry.js",
-    "extra": { "newsApiKey": "006454cfe65e49efa1e9e9b72052ec56" },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "sdkVersion": "54.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "fd24a00c-1d32-48da-b014-2ada8fa65cd5"
+      },
+      "apiUrl": "https://nova-news.ngrok.app/api"
+    },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.michelle.novanews",
+      "buildNumber": "1.0.0",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "",
+        "NSPhotoLibraryUsageDescription": "",
+        "NSLocationWhenInUseUsageDescription": "",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.michelle.novanews",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -24,6 +43,9 @@
     "web": {
       "bundler": "metro",
       "favicon": "./assets/images/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }

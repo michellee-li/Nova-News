@@ -1,9 +1,11 @@
 // src/screens/Onboarding/FinishScreen.tsx
-import React, { useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 import { StackScreenProps } from '@react-navigation/stack';
+import * as SecureStore from 'expo-secure-store';
+import React, { useEffect } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { OnboardingParamList } from '../../navigation/OnboardingNavigator';
+
+console.log('*** in FinishScreen.tsx ***');
 
 type Props = StackScreenProps<OnboardingParamList,'Finish'> & {
   onFinish: () => void;
