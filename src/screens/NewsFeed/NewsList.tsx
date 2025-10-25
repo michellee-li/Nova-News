@@ -23,9 +23,6 @@ console.log('*** in NewsList.tsx ***');
 type Props = StackScreenProps<RootStackParamList, 'NewsList'>;
 type Article = { title: string; publishedAt: string; url: string; urlToImage?: string };
 
-// Pull your key from environment variables
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
-
 export default function NewsList({ navigation }: Props) {
   const [articles,   setArticles] = useState<Article[]>([]);
   const [primaryPin, setPrimaryPin] = useState<string | null>(null);
@@ -46,19 +43,12 @@ export default function NewsList({ navigation }: Props) {
       setBackupPin(b);
     });
 
-    // 2) Fetch real news
-    if (!NEWS_API_KEY) {
-      setError('Missing NewsAPI key');
-      setLoading(false);
-      return;
-    }
-
-    fetch(
-      `https://newsapi.org/v2/top-headlines?country=us&pageSize=50&apiKey=${NEWS_API_KEY}`
-    )
+    // 2) Fetch news from backend (no API key in app)
+    const BASE_URL = "https://nova-news.ngrok.app"; // your FastAPI backend
+    fetch(`${BASE_URL}/api/news?country=us&pageSize=50`)
       .then(res => res.json())
       .then(json => {
-        if (json.status !== 'ok') throw new Error(json.message || 'API Error');
+        if (json.status !== 'ok' && !json.articles) throw new Error(json.message || 'API Error');
         setArticles(json.articles);
       })
       .catch(err => setError(err.message))
@@ -81,12 +71,6 @@ export default function NewsList({ navigation }: Props) {
     );
   }
 
-  const BASE_URL = "https://nova-news.ngrok.app";
-  fetch(`${BASE_URL}/api/news?country=us&pageSize=50`)
-  .then(res => res.json())
-  .then(json => setArticles(json.articles));
-
-
   // Decoy filter
   const displayed = decoyYear
     ? articles.filter(a =>
@@ -97,8 +81,8 @@ export default function NewsList({ navigation }: Props) {
   // PIN modal logic
   const tryUnlock = () => {
     if      (pinEntry === primaryPin) { setModalVis(false); navigation.navigate('PrivateTabs'); }
-    else if (pinEntry === backupPin)  { setModalVis(false); setDecoyYear(pinEntry);                }
-    else                              { alert('That year doesn’t look right.');                  }
+    else if (pinEntry === backupPin)  { setModalVis(false); setDecoyYear(pinEntry); }
+    else                              { alert('That year doesn’t look right.'); }
     setPinEntry('');
   };
 
