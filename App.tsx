@@ -7,7 +7,7 @@ import 'react-native-reanimated';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ErrorBoundary } from './ErrorBoundary';
@@ -16,21 +16,8 @@ import { ErrorBoundary } from './ErrorBoundary';
 import AppNavigator from './src/navigation/AppNavigator';
 import OnboardingNavigator from './src/navigation/OnboardingNavigator';
 
-const linking = {
-  // Prefixes your app should respond to:
-  prefixes: [
-    'novanews://',                        // custom scheme
-    'https://my-nova-news.netlify.app',   // web trampoline
-  ],
-  config: {
-    screens: {
-      // Map the ResetPassword route to /auth/callback
-      // If ResetPassword is nested, keep the same route name in that navigator.
-      ResetPassword: 'auth/callback',
-      // other routes are discovered normally by the navigator
-    },
-  },
-};
+// (Temporarily not using linking to rule it out as a release-only issue)
+// const linking = { ... }
 
 export default function App() {
   const [loading, setLoading] = React.useState(true);
@@ -53,8 +40,16 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <NavigationContainer linking={linking}>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        {/* --- PROBE BANNER (remove after we confirm prod works) --- */}
+        <View style={{ paddingTop: 50, paddingHorizontal: 16 }}>
+          <View style={{ backgroundColor: '#ddd', padding: 8, borderRadius: 8 }}>
+            <Text>Boot step 1: JS mounted (prod)</Text>
+          </View>
+        </View>
+
+        {/* Linking prop removed for this build */}
+        <NavigationContainer>
           {hasOnboarded ? (
             <AppNavigator />
           ) : (
