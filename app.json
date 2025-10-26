@@ -17,7 +17,7 @@
       "eas": {
         "projectId": "fd24a00c-1d32-48da-b014-2ada8fa65cd5"
       },
-      "apiUrl": "https://nova-news.ngrok.app/api"
+      "apiUrl": "https://nova-news.onrender.com/api"
     },
     "ios": {
       "bundleIdentifier": "com.michelle.novanews",

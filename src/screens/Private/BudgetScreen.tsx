@@ -49,7 +49,7 @@ export default function BudgetScreen() {
   const [plan, setPlan] = useState<string>('');
   const [busy, setBusy] = useState(false);
 
-  const BASE_URL_FALLBACK = 'https://nova-news.ngrok.app';
+  const BASE_URL_FALLBACK = 'https://nova-news.onrender.com';
   const BASE_URL =
     Platform.OS === 'ios'
       ? (BASE_URL_IOS || BASE_URL_FALLBACK)

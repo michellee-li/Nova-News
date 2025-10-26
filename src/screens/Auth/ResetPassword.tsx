@@ -1,7 +1,7 @@
 // ResetPassword.tsx
 import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
 import * as Linking from 'expo-linking';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Button, KeyboardAvoidingView, Platform, Text, TextInput, View } from 'react-native';
 import { supabase } from '../../../lib/supabase';
 
@@ -58,7 +58,7 @@ useEffect(() => {
     try {
       setBusy(true);
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: 'https://nova-news.ngrok.app/reset-password',
+        redirectTo: 'https://nova-news.onrender.com/reset-password',
       });
       if (error) throw error;
       Alert.alert('Email sent', 'Check your inbox for a password reset link.');
@@ -77,7 +77,7 @@ useEffect(() => {
     }
     try {
       setBusy(true);
-      const DEFAULT = 'https://nova-news.ngrok.app';
+      const DEFAULT = 'https://nova-news.onrender.com';
       const resolvedBase = Platform.OS === 'ios' ? (BASE_URL_IOS || DEFAULT) : (BASE_URL_ANDROID || DEFAULT);
       const res = await fetch(`${resolvedBase}/api/reset-password`, {
         method: 'POST',

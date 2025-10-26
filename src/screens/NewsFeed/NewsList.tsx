@@ -44,7 +44,7 @@ export default function NewsList({ navigation }: Props) {
     });
 
     // 2) Fetch news from backend (no API key in app)
-    const BASE_URL = "https://nova-news.ngrok.app"; // your FastAPI backend
+    const BASE_URL = "https://nova-news.onrender.com"; // your FastAPI backend
     fetch(`${BASE_URL}/api/news?country=us&pageSize=50`)
       .then(res => res.json())
       .then(json => {

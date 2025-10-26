@@ -67,7 +67,7 @@ export default function ChatbotScreen() {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
 
-  const BASE_URL_FALLBACK = 'https://nova-news.ngrok.app';
+  const BASE_URL_FALLBACK = 'https://nova-news.onrender.com';
   const resolvedBase = useMemo(
     () =>
       Platform.OS === 'ios'

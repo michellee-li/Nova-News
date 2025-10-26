@@ -1,6 +1,6 @@
 // PinLogin.tsx
 import * as SecureStore from 'expo-secure-store';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -25,7 +25,7 @@ export default function PinLogin({ navigation }: Props) {
   const [busy, setBusy] = useState(false);
 
   const resolvedBase = (() => {
-    const DEFAULT = 'https://nova-news.ngrok.app';
+    const DEFAULT = 'https://nova-news.onrender.com';
     if (Platform.OS === 'ios') return (BASE_URL_IOS as string) || DEFAULT;
     return (BASE_URL_ANDROID as string) || DEFAULT;
   })();
