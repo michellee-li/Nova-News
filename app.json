@@ -21,7 +21,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.michelle.novanews",
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.0.10",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "",
@@ -30,6 +30,7 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
+    "updates": { "enabled": false }, 
     "android": {
       "package": "com.michelle.novanews",
       "versionCode": 1,
