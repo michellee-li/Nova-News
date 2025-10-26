@@ -21,12 +21,12 @@
     },
     "ios": {
       "bundleIdentifier": "com.michelle.novanews",
-      "buildNumber": "1.0.10",
+      "buildNumber": "1.0.11",
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "",
-        "NSPhotoLibraryUsageDescription": "",
-        "NSLocationWhenInUseUsageDescription": "",
+        "NSCameraUsageDescription": "Allow taking a profile photo.",
+        "NSPhotoLibraryUsageDescription": "Allow selecting a photo for your profile.",
+        "NSLocationWhenInUseUsageDescription": "Show nearby resources using your location.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },

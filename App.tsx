@@ -4,31 +4,68 @@ import 'react-native-gesture-handler';
 // Reanimated should be imported before other React Native code
 import 'react-native-reanimated';
 
+import { NavigationContainer } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
 import React from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import { ErrorBoundary } from './ErrorBoundary';
 
+// Your existing navigators
+import AppNavigator from './src/navigation/AppNavigator';
+import OnboardingNavigator from './src/navigation/OnboardingNavigator';
+
+const linking = {
+  // Prefixes your app should respond to:
+  prefixes: [
+    'novanews://',                        // custom scheme
+    'https://my-nova-news.netlify.app',   // web trampoline
+  ],
+  config: {
+    screens: {
+      // Map the ResetPassword route to /auth/callback
+      // If ResetPassword is nested, keep the same route name in that navigator.
+      ResetPassword: 'auth/callback',
+      // other routes are discovered normally by the navigator
+    },
+  },
+};
+
 export default function App() {
-  // Heartbeat to confirm the JS bundle actually starts
+  const [loading, setLoading] = React.useState(true);
+  const [hasOnboarded, setHasOnboarded] = React.useState(false);
+
   React.useEffect(() => {
-    try { Alert.alert('App started'); } catch {}
+    SecureStore.getItemAsync('hasOnboarded').then(flag => {
+      setHasOnboarded(flag === 'true');
+      setLoading(false);
+    });
   }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <ErrorBoundary>
-      <View style={styles.container}>
-        <Text style={styles.text}>Hello from production ✅</Text>
-        <Text style={styles.note}>
-          If you see this screen, JS mounted successfully.
-          Next, re-enable navigation/screens step by step.
-        </Text>
-      </View>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer linking={linking}>
+          {hasOnboarded ? (
+            <AppNavigator />
+          ) : (
+            <OnboardingNavigator onFinish={() => setHasOnboarded(true)} />
+          )}
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </ErrorBoundary>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
-  text: { fontSize: 20, fontWeight: '600', textAlign: 'center', marginBottom: 12 },
-  note: { fontSize: 14, color: '#666', textAlign: 'center' },
+  loader: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });
