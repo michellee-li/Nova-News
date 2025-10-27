@@ -4763,7 +4763,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-secure-store@npm:15.0.7":
+"expo-secure-store@npm:~15.0.7":
   version: 15.0.7
   resolution: "expo-secure-store@npm:15.0.7"
   peerDependencies:
@@ -7086,7 +7086,7 @@ __metadata:
     expo-image: "npm:~3.0.10"
     expo-linking: "npm:~8.0.8"
     expo-local-authentication: "npm:17.0.7"
-    expo-secure-store: "npm:15.0.7"
+    expo-secure-store: "npm:~15.0.7"
     expo-splash-screen: "npm:~31.0.10"
     expo-status-bar: "npm:~3.0.8"
     expo-symbols: "npm:~1.0.7"

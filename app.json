@@ -21,7 +21,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.michelle.novanews",
-      "buildNumber": "1.0.13",
+      "buildNumber": "1.0.14",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Allow taking a profile photo.",
@@ -30,7 +30,9 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
-    "updates": { "enabled": false }, 
+    "updates": {
+      "enabled": false
+    },
     "android": {
       "package": "com.michelle.novanews",
       "versionCode": 1,
@@ -46,7 +48,8 @@
     },
     "plugins": [
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      "expo-secure-store"
     ]
   }
 }
