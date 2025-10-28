@@ -1,4 +1,6 @@
-// PinLogin.tsx
+// src/screens/Auth/PinLogin.tsx
+import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
+import { StackScreenProps } from '@react-navigation/stack';
 import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
 import {
@@ -6,33 +8,35 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { RootStackParamList } from '../../navigation/AppNavigator';
 
-// If you use react-native-config or expo-constants, swap these imports accordingly.
-import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
-
-console.log('*** in PinLogin.tsx');
-
-type Props = { navigation: any };
+type Props = StackScreenProps<RootStackParamList, 'PinLogin'>;
+type Mode = 'login' | 'signup';
 
 export default function PinLogin({ navigation }: Props) {
+  const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
 
+  const toggleMode = () => setMode(m => (m === 'login' ? 'signup' : 'login'));
+
   const resolvedBase = (() => {
     const DEFAULT = 'https://nova-news.onrender.com';
-    if (Platform.OS === 'ios') return (BASE_URL_IOS as string) || DEFAULT;
-    return (BASE_URL_ANDROID as string) || DEFAULT;
+    if (Platform.OS === 'ios') return BASE_URL_IOS || DEFAULT;
+    return BASE_URL_ANDROID || DEFAULT;
   })();
 
-  const handleLogin = async () => {
+  const handleAuth = async () => {
     const e = email.trim();
     const p = password;
+
     if (!e || !p) {
       Alert.alert('Missing info', 'Please enter both email and password.');
       return;
@@ -40,30 +44,40 @@ export default function PinLogin({ navigation }: Props) {
 
     try {
       setBusy(true);
-      const res = await fetch(`${resolvedBase}/api/login`, {
+      const path = mode === 'signup' ? '/api/register' : '/api/login';
+
+      const res = await fetch(`${resolvedBase}${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: e, password: p }),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
         const msg =
           typeof data?.detail === 'string'
             ? data.detail
-            : data?.detail?.message || 'Login failed. Check your credentials.';
+            : data?.detail?.message || JSON.stringify(data?.detail) || 'Authentication failed.';
         throw new Error(msg);
       }
 
-      const accessToken = data?.access_token ?? data?.data?.access_token;
-      const refreshToken = data?.refresh_token;
-      if (accessToken) await SecureStore.setItemAsync('ACCESS_TOKEN', accessToken);
-      if (refreshToken) await SecureStore.setItemAsync('REFRESH_TOKEN', refreshToken);
+      if (mode === 'signup') {
+        Alert.alert(
+          'Account created',
+          'Check your email for a confirmation link, then log in.'
+        );
+        setMode('login');
+        return;
+      }
+
+      const token = data?.access_token ?? data?.data?.access_token;
+      if (token) await SecureStore.setItemAsync('ACCESS_TOKEN', token);
       await SecureStore.setItemAsync('USER_EMAIL', e);
 
       navigation.replace('Onboarding');
     } catch (err: any) {
-      Alert.alert('Login error', err?.message ?? String(err));
+      Alert.alert('Authentication failed', err?.message ?? String(err));
     } finally {
       setBusy(false);
     }
@@ -78,9 +92,6 @@ export default function PinLogin({ navigation }: Props) {
 
     try {
       setBusy(true);
-      // DEBUG: show where we're calling and with what email
-      console.log('[FORGOT] base:', resolvedBase, 'email:', e);
-
       const res = await fetch(`${resolvedBase}/api/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,26 +99,8 @@ export default function PinLogin({ navigation }: Props) {
       });
 
       if (!res.ok) {
-        // DEBUG: capture *everything* the server returned
-        let bodyText = '';
-        try { bodyText = await res.text(); } catch {}
-        let parsed: any = {};
-        try { parsed = JSON.parse(bodyText); } catch {}
-
-        const supa =
-          typeof parsed?.detail === 'string' ? parsed.detail :
-          parsed?.detail?.message ?? parsed?.error ?? bodyText ?? 'Unknown error';
-
-        const debugMsg =
-          `Could not start the password reset.\n\n` +
-          `HTTP ${res.status}\n` +
-          `Endpoint: ${resolvedBase}/api/forgot-password\n` +
-          `Email: ${e}\n` +
-          `Server said: ${supa}`;
-
-        console.log('[FORGOT][DEBUG]', debugMsg);
-        Alert.alert('Reset failed', debugMsg);
-        return;
+        const text = await res.text();
+        throw new Error(`Reset failed (${res.status}): ${text}`);
       }
 
       Alert.alert(
@@ -115,7 +108,7 @@ export default function PinLogin({ navigation }: Props) {
         'If that email exists, we sent a password reset link. Open it on your device.'
       );
     } catch (err: any) {
-      Alert.alert('Reset failed (client)', err?.message ?? String(err));
+      Alert.alert('Reset failed', err?.message ?? String(err));
     } finally {
       setBusy(false);
     }
@@ -123,49 +116,92 @@ export default function PinLogin({ navigation }: Props) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' }}
+      style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={{ gap: 12 }}>
-        <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 8 }}>Welcome back</Text>
+      <View style={styles.card}>
+        <Text style={styles.title}>
+          {mode === 'login' ? 'Log In' : 'Sign Up'}
+        </Text>
 
         <TextInput
+          style={styles.input}
           placeholder="Email"
           autoCapitalize="none"
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
           editable={!busy}
-          style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12 }}
         />
 
         <TextInput
+          style={styles.input}
           placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
           editable={!busy}
-          style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12 }}
         />
 
         <TouchableOpacity
-          onPress={handleLogin}
+          onPress={handleAuth}
           disabled={busy}
-          style={{
-            backgroundColor: '#111827',
-            paddingVertical: 12,
-            borderRadius: 10,
-            alignItems: 'center',
-            marginTop: 6,
-          }}
+          style={styles.mainButton}
         >
-          {busy ? <ActivityIndicator /> : <Text style={{ color: 'white', fontWeight: '600' }}>Log in</Text>}
+          {busy ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.mainButtonText}>
+              {mode === 'login' ? 'Log In' : 'Create Account'}
+            </Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleForgotPassword} disabled={busy} style={{ marginTop: 8 }}>
-          <Text style={{ textAlign: 'center', color: '#2563EB' }}>Forgot password?</Text>
+        {mode === 'login' && (
+          <TouchableOpacity onPress={handleForgotPassword} disabled={busy}>
+            <Text style={styles.linkText}>Forgot password?</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity onPress={toggleMode} disabled={busy} style={{ marginTop: 16 }}>
+          <Text style={styles.switchText}>
+            {mode === 'login'
+              ? "Don't have an account? Sign up"
+              : 'Already have an account? Log in'}
+          </Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
+  card: {
+    padding: 20,
+    borderRadius: 8,
+    backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+  },
+  title: { fontSize: 24, fontWeight: '600', marginBottom: 16, textAlign: 'center' },
+  input: {
+    height: 44,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    marginBottom: 12,
+    backgroundColor: '#fff',
+  },
+  mainButton: {
+    backgroundColor: '#111827',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  mainButtonText: { color: 'white', fontWeight: '600' },
+  linkText: { textAlign: 'center', color: '#2563EB', marginTop: 8 },
+  switchText: { textAlign: 'center', color: '#0066cc' },
+});
