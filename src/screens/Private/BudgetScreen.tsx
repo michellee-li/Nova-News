@@ -334,21 +334,39 @@ export default function BudgetScreen() {
             )}
           </View>
 
-          {/* Totals (kept for quick glance) */}
-          <View style={styles.totalsBar}>
-            <View style={[styles.totalPill, { backgroundColor: '#0EA5E9' }]}>
-              <Feather name="trending-down" size={16} color="#fff" />
-              <Text style={styles.totalText}>Income ${totals.inc.toFixed(2)}</Text>
+          {/* Totals — high-readability cards */}
+          <View style={styles.totalsWrap}>
+            <View style={[styles.totalCard, { backgroundColor: '#DCFCE7', borderColor: '#15803D' }]}>
+              <View style={styles.totalHeader}>
+                <Feather name="arrow-down-circle" size={20} color="#166534" />
+                <Text style={[styles.totalLabel, { color: '#14532D' }]}>Income</Text>
+              </View>
+              <Text style={[styles.totalValue, { color: '#14532D' }]}>
+                ${totals.inc.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </Text>
             </View>
-            <View style={[styles.totalPill, { backgroundColor: '#475569' }]}>
-              <Feather name="activity" size={16} color="#fff" />
-              <Text style={styles.totalText}>Net ${totals.net.toFixed(2)}</Text>
+
+            <View style={[styles.totalCard, { backgroundColor: '#DBEAFE', borderColor: '#1D4ED8' }]}>
+              <View style={styles.totalHeader}>
+                <Feather name="activity" size={20} color="#1E3A8A" />
+                <Text style={[styles.totalLabel, { color: '#1E3A8A' }]}>Net</Text>
+              </View>
+              <Text style={[styles.totalValue, { color: '#1E3A8A' }]}>
+                ${totals.net.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </Text>
             </View>
-            <View style={[styles.totalPill, { backgroundColor: '#6B7280' }]}>
-              <Feather name="trending-up" size={16} color="#fff" />
-              <Text style={styles.totalText}>Expenses ${totals.exp.toFixed(2)}</Text>
+
+            <View style={[styles.totalCard, { backgroundColor: '#FEE2E2', borderColor: '#B91C1C' }]}>
+              <View style={styles.totalHeader}>
+                <Feather name="arrow-up-circle" size={20} color="#991B1B" />
+                <Text style={[styles.totalLabel, { color: '#7F1D1D' }]}>Expenses</Text>
+              </View>
+              <Text style={[styles.totalValue, { color: '#7F1D1D' }]}>
+                ${totals.exp.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </Text>
             </View>
           </View>
+
 
           {/* Actions */}
           <View style={styles.actionsRow}>
@@ -388,6 +406,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 4,
+  },
+
+  totalsWrap: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 6,
+  },
+
+  totalCard: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
+  },
+
+  totalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+
+  totalLabel: {
+    fontWeight: '800',
+    fontSize: 14,
+  },
+
+  totalValue: {
+    fontWeight: '900',
+    fontSize: 18,
+    letterSpacing: 0.2,
   },
 
   h1: {
