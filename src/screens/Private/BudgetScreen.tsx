@@ -16,6 +16,7 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import EscapeButton from '../../components/EscapeButton';
 
 type EntryType = 'Income' | 'Expense';
 type Entry = { id: string; type: EntryType; amount: string; category?: string };
@@ -174,24 +175,32 @@ export default function BudgetScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <EscapeButton /> {/* ✅ Add this line */}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.select({ ios: 'padding' })}>
         <ScrollView contentContainerStyle={styles.inner}>
-          {/* Title safely below notch/clock */}
+          {/* Title */}
           <View style={styles.headerRow}>
             <Text style={styles.h1}>Budget Planner</Text>
 
+            {/* Totals moved here for better hierarchy */}
             <View style={styles.kpisRow}>
-              <View style={styles.kpiChip}>
-                <Feather name="arrow-down-circle" size={14} color={PALETTE.text} />
-                <Text style={styles.kpiText}>Income ${totals.inc.toFixed(0)}</Text>
+              <View style={[styles.kpiChip, { backgroundColor: '#DBEAFE' }]}>
+                <Feather name="trending-down" size={16} color="#1E3A8A" />
+                <Text style={[styles.kpiText, { color: '#1E3A8A' }]}>
+                  Income ${totals.inc.toFixed(2)}
+                </Text>
               </View>
-              <View style={styles.kpiChip}>
-                <Feather name="arrow-up-circle" size={14} color={PALETTE.text} />
-                <Text style={styles.kpiText}>Expense ${totals.exp.toFixed(0)}</Text>
+              <View style={[styles.kpiChip, { backgroundColor: '#E2E8F0' }]}>
+                <Feather name="activity" size={16} color="#0F172A" />
+                <Text style={[styles.kpiText, { color: '#0F172A' }]}>
+                  Net ${totals.net.toFixed(2)}
+                </Text>
               </View>
-              <View style={styles.kpiChip}>
-                <Feather name="activity" size={14} color={PALETTE.text} />
-                <Text style={styles.kpiText}>Net ${totals.net.toFixed(0)}</Text>
+              <View style={[styles.kpiChip, { backgroundColor: '#F3F4F6' }]}>
+                <Feather name="trending-up" size={16} color="#991B1B" />
+                <Text style={[styles.kpiText, { color: '#991B1B' }]}>
+                  Expenses ${totals.exp.toFixed(2)}
+                </Text>
               </View>
             </View>
           </View>
