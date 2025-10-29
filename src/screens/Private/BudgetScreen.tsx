@@ -225,7 +225,7 @@ export default function BudgetScreen() {
             <View style={[styles.kpiChip, { backgroundColor: '#FEE2E2', borderColor: '#B91C1C' }]}>
               <Feather name="arrow-up-circle" size={20} color="#991B1B" />
               <Text style={[styles.kpiText, { color: '#7F1D1D' }]}>
-                Expenses: ${totals.exp.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                Expense: ${totals.exp.toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </Text>
             </View>
           </View>
@@ -359,7 +359,7 @@ export default function BudgetScreen() {
             <View style={[styles.totalCard, { backgroundColor: '#FEE2E2', borderColor: '#B91C1C' }]}>
               <View style={styles.totalHeader}>
                 <Feather name="arrow-up-circle" size={20} color="#991B1B" />
-                <Text style={[styles.totalLabel, { color: '#7F1D1D' }]}>Expenses</Text>
+                <Text style={[styles.totalLabel, { color: '#7F1D1D' }]}>Expense</Text>
               </View>
               <Text style={[styles.totalValue, { color: '#7F1D1D' }]}>
                 ${totals.exp.toLocaleString(undefined, { minimumFractionDigits: 2 })}
