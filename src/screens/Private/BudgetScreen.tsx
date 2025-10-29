@@ -1,7 +1,8 @@
-// src/screens/BudgetScreen.tsx
+// src/screens/Private/BudgetScreen.tsx
 import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -16,7 +17,6 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import EscapeButton from '../../components/EscapeButton';
 
 type EntryType = 'Income' | 'Expense';
 type Entry = { id: string; type: EntryType; amount: string; category?: string };
@@ -40,6 +40,7 @@ const PALETTE = {
 };
 
 export default function BudgetScreen() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
   const [entryType, setEntryType] = useState<EntryType>('Income');
@@ -153,7 +154,7 @@ export default function BudgetScreen() {
           type: e.type,
           amount: Number(e.amount),
           category: (e.category || (e.type === 'Income' ? 'Income' : 'Expense')).trim()
-          })),
+        })),
       };
       const res = await fetch(`${BASE_URL}/api/budget/plan`, {
         method: 'POST',
@@ -173,35 +174,51 @@ export default function BudgetScreen() {
     }
   };
 
+  // --- ESCAPE handler: navigate now, clear auth after 4s ---
+  const handleEscape = () => {
+    // 1) Immediately “cover” by going to NewsList
+    //    (make sure your navigator has a route named 'NewsList')
+    // @ts-ignore
+    navigation.navigate('NewsList');
+
+    // 2) After a short delay, remove the login token
+    setTimeout(async () => {
+      try {
+        await SecureStore.deleteItemAsync('USER_EMAIL');
+        console.log('[ESCAPE] user logged out');
+      } catch (e) {
+        console.log('[ESCAPE] logout error', e);
+      }
+    }, 4000); // 4 seconds
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <EscapeButton /> {/* ✅ Add this line */}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.select({ ios: 'padding' })}>
         <ScrollView contentContainerStyle={styles.inner}>
-          {/* Title */}
-          <View style={styles.headerRow}>
+          {/* Top row: title + ESCAPE button (kept within the screen) */}
+          <View style={styles.topRow}>
             <Text style={styles.h1}>Budget Planner</Text>
 
-            {/* Totals moved here for better hierarchy */}
-            <View style={styles.kpisRow}>
-              <View style={[styles.kpiChip, { backgroundColor: '#DBEAFE' }]}>
-                <Feather name="trending-down" size={16} color="#1E3A8A" />
-                <Text style={[styles.kpiText, { color: '#1E3A8A' }]}>
-                  Income ${totals.inc.toFixed(2)}
-                </Text>
-              </View>
-              <View style={[styles.kpiChip, { backgroundColor: '#E2E8F0' }]}>
-                <Feather name="activity" size={16} color="#0F172A" />
-                <Text style={[styles.kpiText, { color: '#0F172A' }]}>
-                  Net ${totals.net.toFixed(2)}
-                </Text>
-              </View>
-              <View style={[styles.kpiChip, { backgroundColor: '#F3F4F6' }]}>
-                <Feather name="trending-up" size={16} color="#991B1B" />
-                <Text style={[styles.kpiText, { color: '#991B1B' }]}>
-                  Expenses ${totals.exp.toFixed(2)}
-                </Text>
-              </View>
+            <Pressable onPress={handleEscape} style={styles.escapeBtn} accessibilityLabel="Escape to News and logout shortly">
+              <Feather name="shield-off" size={16} color="#fff" />
+              <Text style={styles.escapeText}>ESCAPE</Text>
+            </Pressable>
+          </View>
+
+          {/* Readable KPI chips */}
+          <View style={styles.kpisRow}>
+            <View style={[styles.kpiChip, { backgroundColor: '#DBEAFE' }]}>
+              <Feather name="trending-down" size={16} color="#1E3A8A" />
+              <Text style={[styles.kpiText, { color: '#1E3A8A' }]}>Income ${totals.inc.toFixed(2)}</Text>
+            </View>
+            <View style={[styles.kpiChip, { backgroundColor: '#E2E8F0' }]}>
+              <Feather name="activity" size={16} color="#0F172A" />
+              <Text style={[styles.kpiText, { color: '#0F172A' }]}>Net ${totals.net.toFixed(2)}</Text>
+            </View>
+            <View style={[styles.kpiChip, { backgroundColor: '#F3F4F6' }]}>
+              <Feather name="trending-up" size={16} color="#991B1B" />
+              <Text style={[styles.kpiText, { color: '#991B1B' }]}>Expenses ${totals.exp.toFixed(2)}</Text>
             </View>
           </View>
 
@@ -232,20 +249,14 @@ export default function BudgetScreen() {
             <View style={styles.segmentRow}>
               <Pressable
                 onPress={() => setEntryType('Income')}
-                style={[
-                  styles.segmentBtn,
-                  entryType === 'Income' && styles.segmentBtnActive
-                ]}
+                style={[styles.segmentBtn, entryType === 'Income' && styles.segmentBtnActive]}
               >
                 <Feather name="arrow-down-circle" size={16} color={entryType === 'Income' ? PALETTE.accent : PALETTE.text} />
                 <Text style={[styles.segmentText, entryType === 'Income' && { color: PALETTE.accent }]}>Income</Text>
               </Pressable>
               <Pressable
                 onPress={() => setEntryType('Expense')}
-                style={[
-                  styles.segmentBtn,
-                  entryType === 'Expense' && styles.segmentBtnActive
-                ]}
+                style={[styles.segmentBtn, entryType === 'Expense' && styles.segmentBtnActive]}
               >
                 <Feather name="arrow-up-circle" size={16} color={entryType === 'Expense' ? PALETTE.accent : PALETTE.text} />
                 <Text style={[styles.segmentText, entryType === 'Expense' && { color: PALETTE.accent }]}>Expense</Text>
@@ -314,23 +325,23 @@ export default function BudgetScreen() {
             )}
           </View>
 
-          {/* Totals */}
+          {/* Totals (kept for quick glance) */}
           <View style={styles.totalsBar}>
-            <View style={[styles.totalPill, { backgroundColor: '#0EA5E9' /* subtle blue */ }]}>
+            <View style={[styles.totalPill, { backgroundColor: '#0EA5E9' }]}>
               <Feather name="trending-down" size={16} color="#fff" />
               <Text style={styles.totalText}>Income ${totals.inc.toFixed(2)}</Text>
             </View>
-            <View style={[styles.totalPill, { backgroundColor: '#475569' /* slate */ }]}>
+            <View style={[styles.totalPill, { backgroundColor: '#475569' }]}>
               <Feather name="activity" size={16} color="#fff" />
               <Text style={styles.totalText}>Net ${totals.net.toFixed(2)}</Text>
             </View>
-            <View style={[styles.totalPill, { backgroundColor: '#6B7280' /* gray */ }]}>
+            <View style={[styles.totalPill, { backgroundColor: '#6B7280' }]}>
               <Feather name="trending-up" size={16} color="#fff" />
               <Text style={styles.totalText}>Expenses ${totals.exp.toFixed(2)}</Text>
             </View>
           </View>
 
-          {/* Actions (Reload Removed) */}
+          {/* Actions */}
           <View style={styles.actionsRow}>
             <Pressable
               onPress={submitPlan}
@@ -362,32 +373,51 @@ const styles = StyleSheet.create({
 
   inner: { padding: 16, gap: 12 },
 
-  headerRow: { marginBottom: 4 },
+  // New: top row with inline ESCAPE button
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+
   h1: {
     fontSize: 28,
     fontWeight: '800',
     color: PALETTE.text,
-    letterSpacing: 0.2
+    letterSpacing: 0.2,
   },
+
+  // ESCAPE button (inside screen, not absolute)
+  escapeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    backgroundColor: '#EF4444', // red for urgency
+    borderRadius: 999,
+    elevation: 2,
+  },
+  escapeText: { color: '#fff', fontWeight: '800', fontSize: 14 },
 
   kpisRow: {
     flexDirection: 'row',
     gap: 8,
     marginTop: 10,
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   kpiChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: PALETTE.chip,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: PALETTE.line
   },
-  kpiText: { fontWeight: '700', color: PALETTE.text, fontSize: 12 },
+  kpiText: { fontWeight: '800', fontSize: 14 },
 
   card: {
     backgroundColor: PALETTE.card,
@@ -424,10 +454,7 @@ const styles = StyleSheet.create({
 
   h2: { fontSize: 18, fontWeight: '800', color: PALETTE.text },
 
-  segmentRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
+  segmentRow: { flexDirection: 'row', gap: 8 },
   segmentBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -441,7 +468,7 @@ const styles = StyleSheet.create({
   },
   segmentBtnActive: {
     borderColor: PALETTE.accent,
-    backgroundColor: '#EFF6FF' // light accent tint
+    backgroundColor: '#EFF6FF'
   },
   segmentText: { fontWeight: '700', color: PALETTE.text },
 
