@@ -21,7 +21,6 @@
     },
     "ios": {
       "bundleIdentifier": "com.michelle.novanews",
-      "buildNumber": "1.0.16",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Allow taking a profile photo.",
