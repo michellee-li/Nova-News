@@ -206,21 +206,30 @@ export default function BudgetScreen() {
             </Pressable>
           </View>
 
-          {/* Readable KPI chips */}
+          {/* KPIs (Income / Net / Expenses) */}
           <View style={styles.kpisRow}>
-            <View style={[styles.kpiChip, { backgroundColor: '#DBEAFE' }]}>
-              <Feather name="trending-down" size={16} color="#1E3A8A" />
-              <Text style={[styles.kpiText, { color: '#1E3A8A' }]}>Income ${totals.inc.toFixed(2)}</Text>
+            <View style={[styles.kpiChip, { backgroundColor: '#DCFCE7', borderColor: '#15803D' }]}>
+              <Feather name="arrow-down-circle" size={20} color="#166534" />
+              <Text style={[styles.kpiText, { color: '#14532D' }]}>
+                Income: ${totals.inc.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </Text>
             </View>
-            <View style={[styles.kpiChip, { backgroundColor: '#E2E8F0' }]}>
-              <Feather name="activity" size={16} color="#0F172A" />
-              <Text style={[styles.kpiText, { color: '#0F172A' }]}>Net ${totals.net.toFixed(2)}</Text>
+
+            <View style={[styles.kpiChip, { backgroundColor: '#DBEAFE', borderColor: '#1D4ED8' }]}>
+              <Feather name="activity" size={20} color="#1E3A8A" />
+              <Text style={[styles.kpiText, { color: '#1E3A8A' }]}>
+                Net: ${totals.net.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </Text>
             </View>
-            <View style={[styles.kpiChip, { backgroundColor: '#F3F4F6' }]}>
-              <Feather name="trending-up" size={16} color="#991B1B" />
-              <Text style={[styles.kpiText, { color: '#991B1B' }]}>Expenses ${totals.exp.toFixed(2)}</Text>
+
+            <View style={[styles.kpiChip, { backgroundColor: '#FEE2E2', borderColor: '#B91C1C' }]}>
+              <Feather name="arrow-up-circle" size={20} color="#991B1B" />
+              <Text style={[styles.kpiText, { color: '#7F1D1D' }]}>
+                Expenses: ${totals.exp.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </Text>
             </View>
           </View>
+
 
           {/* State & Goal */}
           <View style={styles.card}>
@@ -410,14 +419,21 @@ const styles = StyleSheet.create({
   kpiChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: PALETTE.line
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
-  kpiText: { fontWeight: '800', fontSize: 14 },
+  kpiText: {
+    fontWeight: '800',
+    fontSize: 15,
+  },
 
   card: {
     backgroundColor: PALETTE.card,
