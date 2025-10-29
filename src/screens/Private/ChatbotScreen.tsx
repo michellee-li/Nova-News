@@ -1,15 +1,19 @@
 // === app/screens/ChatbotScreen.tsx ===
 import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
+import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
 import { useMemo, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -31,36 +35,7 @@ const FEATURED = [
 ];
 
 export default function ChatbotScreen() {
-  //   // Sends a predefined question/topic when a category or featured card is tapped
-  // const sendMessageFromCategory = async (topic: string) => {
-  //   if (sending) return;
-  //   const userMsg: Message = { id: String(Date.now()), from: 'user', text: topic };
-  //   setMessages(prev => [userMsg, ...prev]);
-  //   setSending(true);
-
-  //   try {
-  //     const res = await fetch(`${resolvedBase}/api/prompt`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ prompt: topic }),
-  //     });
-  //     const data: { response?: string } = await res.json();
-  //     const botMsg: Message = {
-  //       id: String(Date.now() + 1),
-  //       from: 'bot',
-  //       text: res.ok ? (data.response ?? 'Sorry, I didn’t get a response.') : `HTTP ${res.status}`,
-  //     };
-  //     setMessages(prev => [botMsg, ...prev]);
-  //   } catch (err: any) {
-  //     setMessages(prev => [
-  //       { id: String(Date.now() + 1), from: 'bot', text: `Error: ${err.message}` },
-  //       ...prev,
-  //     ]);
-  //   } finally {
-  //     setSending(false);
-  //   }
-  // };
-
+  const navigation = useNavigation();
   const [messages, setMessages] = useState<Message[]>([
     { id: 'init', from: 'bot', text: 'Hi, I’m Emily. How can I help you today?' },
   ]);
@@ -76,7 +51,20 @@ export default function ChatbotScreen() {
     []
   );
 
-  // Map short labels to fuller, validated prompts
+  // Escape button handler — redirect + logout after 4 seconds
+  const handleEscape = () => {
+    // @ts-ignore
+    navigation.navigate('NewsList');
+    setTimeout(async () => {
+      try {
+        await SecureStore.deleteItemAsync('USER_EMAIL');
+        console.log('[ESCAPE] user logged out');
+      } catch (e) {
+        console.log('[ESCAPE] logout error', e);
+      }
+    }, 4000);
+  };
+
   const PROMPT_TEMPLATES: Record<string, string> = {
     'Credit Repair': 'I need step-by-step help rebuilding my credit after financial abuse. List beginner-friendly actions, secured card options, and how to dispute errors. Keep it simple and trauma-informed.',
     'Jobs': 'Please suggest job resources for someone restarting work after a crisis: returnship programs, remote-friendly roles, resume refresh tips, and places to apply right now.',
@@ -89,7 +77,6 @@ export default function ChatbotScreen() {
     'Companies Hiring Returners in 2025': 'Share companies with returnships or career reentry programs in 2025, with links or search terms to find current postings.'
   };
 
-  // Reusable sender that ensures a long-enough prompt and shows server errors
   const sendPrompt = async (fullPrompt: string) => {
     if (sending) return;
     const question = fullPrompt.trim();
@@ -129,12 +116,10 @@ export default function ChatbotScreen() {
     }
   };
 
-  // When a chip/card is tapped, expand label to a full prompt
   const sendMessageFromCategory = (label: string) => {
     const full = PROMPT_TEMPLATES[label] ?? `Please help with: ${label}. Provide actionable steps and resources.`;
     sendPrompt(full);
   };
-
 
   const sendMessage = async () => {
     const question = input.trim();
@@ -209,6 +194,15 @@ export default function ChatbotScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        {/* Top bar with title + ESCAPE button */}
+        <View style={styles.topRow}>
+          <Text style={styles.title}>Ask Emily</Text>
+          <Pressable onPress={handleEscape} style={styles.escapeBtn}>
+            <Feather name="shield-off" size={16} color="#fff" />
+            <Text style={styles.escapeText}>ESCAPE</Text>
+          </Pressable>
+        </View>
+
         <View style={styles.container}>
           <FlatList
             inverted
@@ -250,7 +244,30 @@ export default function ChatbotScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: 12, paddingTop: 8 },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  escapeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    backgroundColor: '#EF4444',
+    borderRadius: 999,
+  },
+  escapeText: { color: '#fff', fontWeight: '800', fontSize: 14 },
+
+  container: { flex: 1, paddingHorizontal: 12, paddingTop: 4 },
   bubble: {
     marginVertical: 6,
     paddingVertical: 10,
@@ -291,7 +308,13 @@ const styles = StyleSheet.create({
   sendText: { color: '#FFF', fontWeight: '600' },
 
   footerBlock: { marginTop: 8 },
-  sectionHeader: { fontSize: 12, letterSpacing: 1, color: '#7A7A7A', marginHorizontal: 2, marginBottom: 8 },
+  sectionHeader: {
+    fontSize: 12,
+    letterSpacing: 1,
+    color: '#7A7A7A',
+    marginHorizontal: 2,
+    marginBottom: 8,
+  },
   categoriesWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { paddingVertical: 10, paddingHorizontal: 12, borderRadius: 12 },
   chipText: { fontSize: 14, fontWeight: '500' },

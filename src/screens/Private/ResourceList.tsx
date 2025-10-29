@@ -1,6 +1,8 @@
 // src/screens/Private/ResourceList.tsx
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
+import { useMemo, useState } from "react";
 import {
   Linking,
   Pressable,
@@ -18,16 +20,13 @@ type Resource = {
   title: string;
   category: string;
   url: string;
-  // optional fields in case you add later:
   description?: string;
   featured?: boolean;
   location?: string;
 };
 
-// Cast JSON → typed array
 const resources = rawResources as Resource[];
 
-// Soft palette to match the mockup
 const PALETTE = {
   bg: "#FAF6EF",
   card: "#FFFFFF",
@@ -44,18 +43,7 @@ const PALETTE = {
   shadow: "rgba(0,0,0,0.06)",
 };
 
-// Category config to render the 6 rounded buttons
-const CATEGORIES: {
-  key: string;
-  label: string;
-  bg: string;
-  icon:
-    | { lib: "Feather"; name: React.ComponentProps<typeof Feather>["name"] }
-    | {
-        lib: "MCI";
-        name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-      };
-}[] = [
+const CATEGORIES = [
   { key: "Credit Repair", label: "Credit Repair", bg: PALETTE.chipLilac, icon: { lib: "Feather", name: "credit-card" } },
   { key: "Jobs", label: "Jobs", bg: PALETTE.chipLavender, icon: { lib: "Feather", name: "briefcase" } },
   { key: "Housing", label: "Housing", bg: PALETTE.chipMint, icon: { lib: "Feather", name: "home" } },
@@ -65,21 +53,33 @@ const CATEGORIES: {
 ];
 
 export default function ResourceList() {
+  const navigation = useNavigation();
   const [query, setQuery] = useState("");
 
-  // “Featured”: prefer items flagged featured, otherwise take top by category variety
+  // Escape button handler — redirect + logout after 4 seconds
+  const handleEscape = () => {
+    // @ts-ignore
+    navigation.navigate("NewsList");
+    setTimeout(async () => {
+      try {
+        await SecureStore.deleteItemAsync("USER_EMAIL");
+        console.log("[ESCAPE] user logged out");
+      } catch (e) {
+        console.log("[ESCAPE] logout error", e);
+      }
+    }, 4000);
+  };
+
   const featured = useMemo<Resource[]>(() => {
     const flagged = resources.filter((r) => r.featured);
     if (flagged.length >= 3) return flagged.slice(0, 3);
 
-    // otherwise pick 1 from 3 distinct categories if possible
     const byCat = new Map<string, Resource>();
     for (const r of resources) {
       if (!byCat.has(r.category)) byCat.set(r.category, r);
       if (byCat.size >= 3) break;
     }
     const picks = Array.from(byCat.values()).slice(0, 3);
-    // If still <3, fill with first items
     while (picks.length < 3 && picks.length < resources.length) {
       const next = resources[picks.length];
       if (next) picks.push(next);
@@ -90,7 +90,7 @@ export default function ResourceList() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return resources.slice(0, 12); // keep list tidy
+    if (!q) return resources.slice(0, 12);
     return resources.filter(
       (r) =>
         r.title.toLowerCase().includes(q) ||
@@ -101,106 +101,96 @@ export default function ResourceList() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <Text style={styles.headerText}>Resources</Text>
-        {/* Quick exit could be wired to open a neutral site */}
-        {/* <Pressable onPress={() => Linking.openURL("https://www.cnn.com")}>
-          <Text style={styles.exitText}>Quick Exit</Text>
-        </Pressable> */}
-      </View>
-
-      {/* Search */}
-      <View style={styles.searchWrap}>
-        <Feather name="search" size={18} color={PALETTE.subtext} />
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Find local or online support…"
-          placeholderTextColor={PALETTE.subtext}
-          style={styles.searchInput}
-          returnKeyType="search"
-        />
-      </View>
-
-      {/* Categories grid */}
-      <Text style={styles.sectionLabel}>CATEGORIES</Text>
-      <View style={styles.grid}>
-        {CATEGORIES.map((c) => {
-          const Icon =
-            c.icon.lib === "Feather" ? (
-              <Feather name={c.icon.name as any} size={18} color={PALETTE.text} />
-            ) : (
-              <MaterialCommunityIcons
-                name={c.icon.name as any}
-                size={18}
-                color={PALETTE.text}
-              />
-            );
-          return (
-            <Pressable
-              key={c.key}
-              style={[styles.chip, { backgroundColor: c.bg }]}
-              onPress={() => {
-                // In a future PR you can navigate:
-                // navigation.navigate("ResourceCategory", { category: c.key })
-                setQuery(c.label);
-              }}
-            >
-              <View style={styles.chipRow}>
-                {Icon}
-                <Text style={styles.chipText}>{c.label}</Text>
-              </View>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Featured */}
-      <Text style={[styles.sectionLabel, { marginTop: 12 }]}>FEATURED</Text>
-      <View style={styles.cards}>
-        {featured.map((r, idx) => (
-          <Pressable
-            key={r.id}
-            onPress={() => Linking.openURL(r.url)}
-            style={styles.card}
-          >
-            <View style={styles.cardIconWrap}>
-              {/* Simple icon heuristic by category */}
-              {iconForCategory(r.category)}
-            </View>
-            <Text style={styles.cardTitle} numberOfLines={2}>
-              {r.title}
-            </Text>
-            <Text style={styles.cardSub} numberOfLines={1}>
-              {r.category}
-            </Text>
+        {/* Header */}
+        <View style={styles.headerRow}>
+          <Text style={styles.headerText}>Resources</Text>
+          <Pressable onPress={handleEscape} style={styles.escapeBtn}>
+            <Feather name="shield-off" size={16} color="#fff" />
+            <Text style={styles.escapeText}>ESCAPE</Text>
           </Pressable>
-        ))}
-      </View>
+        </View>
 
-      {/* Results (mini list) */}
-      <View style={styles.listWrap}>
-        {filtered.map((r) => (
-          <Pressable
-            key={r.id}
-            onPress={() => Linking.openURL(r.url)}
-            style={styles.listItem}
-          >
-            <View style={styles.listIcon}>{iconForCategory(r.category, 16)}</View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.listTitle} numberOfLines={2}>
+        {/* Search */}
+        <View style={styles.searchWrap}>
+          <Feather name="search" size={18} color={PALETTE.subtext} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Find local or online support…"
+            placeholderTextColor={PALETTE.subtext}
+            style={styles.searchInput}
+            returnKeyType="search"
+          />
+        </View>
+
+        {/* Categories */}
+        <Text style={styles.sectionLabel}>CATEGORIES</Text>
+        <View style={styles.grid}>
+          {CATEGORIES.map((c) => {
+            const Icon =
+              c.icon.lib === "Feather" ? (
+                <Feather name={c.icon.name as any} size={18} color={PALETTE.text} />
+              ) : (
+                <MaterialCommunityIcons
+                  name={c.icon.name as any}
+                  size={18}
+                  color={PALETTE.text}
+                />
+              );
+            return (
+              <Pressable
+                key={c.key}
+                style={[styles.chip, { backgroundColor: c.bg }]}
+                onPress={() => setQuery(c.label)}
+              >
+                <View style={styles.chipRow}>
+                  {Icon}
+                  <Text style={styles.chipText}>{c.label}</Text>
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* Featured */}
+        <Text style={[styles.sectionLabel, { marginTop: 12 }]}>FEATURED</Text>
+        <View style={styles.cards}>
+          {featured.map((r) => (
+            <Pressable key={r.id} onPress={() => Linking.openURL(r.url)} style={styles.card}>
+              <View style={styles.cardIconWrap}>
+                {iconForCategory(r.category)}
+              </View>
+              <Text style={styles.cardTitle} numberOfLines={2}>
                 {r.title}
               </Text>
-              <Text style={styles.listSub}>{r.category}</Text>
-            </View>
-            <Feather name="chevron-right" size={18} color={PALETTE.subtext} />
-          </Pressable>
-        ))}
-      </View>
+              <Text style={styles.cardSub} numberOfLines={1}>
+                {r.category}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
 
-      {/* bottom spacing */}
-      <View style={{ height: 24 }} />
+        {/* Results */}
+        <View style={styles.listWrap}>
+          {filtered.map((r) => (
+            <Pressable
+              key={r.id}
+              onPress={() => Linking.openURL(r.url)}
+              style={styles.listItem}
+            >
+              <View style={styles.listIcon}>{iconForCategory(r.category, 16)}</View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.listTitle} numberOfLines={2}>
+                  {r.title}
+                </Text>
+                <Text style={styles.listSub}>{r.category}</Text>
+              </View>
+              <Feather name="chevron-right" size={18} color={PALETTE.subtext} />
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={{ height: 24 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -231,28 +221,34 @@ function iconForCategory(cat: string, size: number = 22) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: PALETTE.bg },
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#FAF6EF" // same background as before
-  },
+  safeArea: { flex: 1, backgroundColor: "#FAF6EF" },
   content: { padding: 16, paddingBottom: 8 },
+
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "center",
     marginBottom: 12,
   },
   headerText: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1D2433", //PALETTE.text,
+    color: "#1D2433",
     letterSpacing: 0.3,
   },
-  exitText: {
-    color: PALETTE.subtext,
-    fontSize: 12,
-    textDecorationLine: "underline",
+
+  // ESCAPE button
+  escapeBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    backgroundColor: "#EF4444",
+    borderRadius: 999,
   },
+  escapeText: { color: "#fff", fontWeight: "800", fontSize: 14 },
+
   searchWrap: {
     flexDirection: "row",
     alignItems: "center",
@@ -275,30 +271,17 @@ const styles = StyleSheet.create({
     letterSpacing: 1.1,
     fontWeight: "700",
   },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   chip: {
     borderRadius: 14,
     paddingVertical: 10,
     paddingHorizontal: 14,
     minWidth: "47%",
   },
-  chipRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  chipText: {
-    fontSize: 15,
-    color: PALETTE.chipLilacText,
-    fontWeight: "600",
-  },
-  cards: {
-    gap: 12,
-  },
+  chipRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  chipText: { fontSize: 15, color: PALETTE.chipLilacText, fontWeight: "600" },
+
+  cards: { gap: 12 },
   card: {
     backgroundColor: PALETTE.card,
     borderRadius: 16,
@@ -317,6 +300,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cardSub: { color: PALETTE.subtext, fontSize: 12, fontWeight: "600" },
+
   listWrap: {
     marginTop: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
