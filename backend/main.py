@@ -109,3 +109,56 @@ async def reset_password(
             "token": supplied,
         },
     )
+
+@app.get("/support")
+async def support():
+    return """
+<html>
+      <head>
+        <title>Nova News Support</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            color: #333;
+          }
+          .container {
+            max-width: 90%;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          }
+          h2 {
+            color: #2a6cdf;
+            margin-bottom: 10px;
+          }
+          p {
+            font-size: 16px;
+            line-height: 1.5;
+          }
+          b {
+            color: #000;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h2>Nova News Support</h2>
+          <p>Need help or have questions?</p>
+          <p>Email us at <b>nova.news.app@gmail.com</b> or visit this page for updates.</p>
+          <p>Thank you for using Nova News.</p>
+        </div>
+      </body>
+    </html>
+    """
+
