@@ -10,6 +10,7 @@ from backend.user import router as user_router
 from backend.gpt_advice import router as gpt_router
 from backend.budget import router as budget_router
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, Response
 import requests
 
 logging.basicConfig(level=logging.INFO)
@@ -110,55 +111,92 @@ async def reset_password(
         },
     )
 
-@app.get("/support")
+@app.get("/support", response_class=HTMLResponse)
 async def support():
-    return """
-<html>
+    html = """
+    <html lang="en">
       <head>
-        <title>Nova News Support</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nova News Support</title>
         <style>
+          :root {
+            --accent: #4b6cb7;
+            --accent-light: #182848;
+            --bg: #f5f7fa;
+            --text: #333;
+          }
           body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fafafa;
+            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            text-align: center;
-            color: #333;
           }
-          .container {
-            max-width: 90%;
-            padding: 20px;
+          .card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
           }
           h2 {
-            color: #2a6cdf;
-            margin-bottom: 10px;
+            color: var(--accent-light);
+            font-weight: 600;
+            margin-bottom: 1rem;
           }
           p {
-            font-size: 16px;
+            color: var(--text);
             line-height: 1.5;
+            margin: 0.5rem 0;
           }
-          b {
-            color: #000;
+          a.email-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+          }
+          a.email-link:hover {
+            text-decoration: underline;
+          }
+          .button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+          }
+          .button:hover {
+            opacity: 0.9;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
           }
         </style>
       </head>
       <body>
-        <div class="container">
+        <div class="card">
           <h2>Nova News Support</h2>
           <p>Need help or have questions?</p>
-          <p>Email us at <b>nova.news.app@gmail.com</b> or visit this page for updates.</p>
-          <p>Thank you for using Nova News.</p>
+          <p>
+            Contact us anytime at 
+            <a class="email-link" href="mailto:nova.news.app@gmail.com">
+              nova.news.app@gmail.com
+            </a>.
+          </p>
+          <p>We’ll get back to you as soon as possible.</p>
         </div>
       </body>
     </html>
     """
+    return HTMLResponse(content=html, status_code=200)
 
