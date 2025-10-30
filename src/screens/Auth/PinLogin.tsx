@@ -52,14 +52,35 @@ export default function PinLogin({ navigation }: Props) {
         body: JSON.stringify({ email: e, password: p }),
       });
 
-      const data = await res.json();
+      // Safely try to parse JSON, but don't rely on shape
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        // ignore parse errors; we'll fall back to friendly copy
+      }
 
       if (!res.ok) {
-        const msg =
-          typeof data?.detail === 'string'
-            ? data.detail
-            : data?.detail?.message || JSON.stringify(data?.detail) || 'Authentication failed.';
-        throw new Error(msg);
+        // ---- FRIENDLY MESSAGES ONLY (no raw server JSON) ----
+        const lower = (s: unknown) =>
+          (typeof s === 'string' ? s : String(s ?? '')).toLowerCase();
+
+        const code = lower(data?.error_code || data?.code || data?.error);
+        const detail = lower(data?.detail || data?.message || data?.msg);
+
+        let userMsg =
+          'We couldn’t sign you in. Please check your email and password and try again.';
+
+        // Common invalid-credentials patterns
+        if (code.includes('invalid_credentials') || detail.includes('invalid login credentials')) {
+          userMsg = 'Email or password is incorrect.';
+        } else if (res.status === 429) {
+          userMsg = 'Too many attempts. Please wait a moment and try again.';
+        } else if (res.status >= 500) {
+          userMsg = 'Server is having trouble right now. Please try again shortly.';
+        }
+
+        throw new Error(userMsg);
       }
 
       if (mode === 'signup') {
@@ -77,7 +98,8 @@ export default function PinLogin({ navigation }: Props) {
 
       navigation.replace('Onboarding');
     } catch (err: any) {
-      Alert.alert('Authentication failed', err?.message ?? String(err));
+      // Will show only the sanitized message from above
+      Alert.alert('Authentication failed', err?.message ?? 'Please try again.');
     } finally {
       setBusy(false);
     }

@@ -326,7 +326,7 @@ export default function BudgetScreen() {
                       </Text>
                     </View>
                     <Pressable onPress={() => removeEntry(e.id)} style={styles.iconBtn} accessibilityLabel="Remove entry">
-                      <Feather name="trash-2" size={18} color={PALETTE.sub} />
+                      <Feather name="trash-2" size={16} color={PALETTE.sub} />
                     </Pressable>
                   </View>
                 ))}
