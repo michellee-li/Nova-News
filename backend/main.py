@@ -11,6 +11,8 @@ from backend.gpt_advice import router as gpt_router
 from backend.budget import router as budget_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, Response
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 import requests
 
 logging.basicConfig(level=logging.INFO)
@@ -199,4 +201,13 @@ async def support():
     </html>
     """
     return HTMLResponse(content=html, status_code=200)
+
+# Serve the /static path (optional but handy)
+app.mount("/static", StaticFiles(directory="public"), name="static")
+
+# Serve privacy page at a clean URL Apple can access
+@app.get("/privacy")
+def privacy():
+    # FileResponse sets correct headers & content-type
+    return FileResponse("public/privacy.html", media_type="text/html")
 
