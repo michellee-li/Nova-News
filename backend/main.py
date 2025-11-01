@@ -217,3 +217,6 @@ def privacy():
         media_type="text/html"
     )
 
+@app.get("/confirm")
+def confirm():
+    return FileResponse(str(ROOT_DIR / "public" / "confirm.html"))

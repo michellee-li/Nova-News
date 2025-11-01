@@ -77,63 +77,28 @@ def login_user(req: LoginRequest):
 @router.post("/forgot-password")
 def forgot_password(email: str = Body(..., embed=True)):
     try:
-        print(f"***** in user.py - def forgot_password")
         redirect = (EMAIL_REDIRECT_TO_RESET or "").strip()
         url = f"{SUPABASE_URL}/auth/v1/recover"
         if redirect:
-            # send in query too (some deployments require this)
-            url += f"?redirect_to={quote(redirect, safe='')}"
-
+            url += f"?redirect_to={quote(redirect, safe='')}"  # query
         headers = {"apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json"}
         payload = {"email": email}
         if redirect:
-            payload["redirect_to"] = redirect
-
-        print(f"url: {url}")
-        print(f"headers: {headers}")
-        print(f"payload: {payload}")
-
-        resp = requests.post(url, headers=headers, json=payload, timeout=15)
-        print(f"resp: {resp}")
-        print(f"resp.status_code: {resp.status_code}")
-        log.info("[FORGOT->SUPABASE] status=%s text=%s", resp.status_code, resp.text[:500])
-
-        if resp.status_code not in (200, 204):
-            # DEBUG: bubble supabase message to the client so you see it in app
-            try: 
-                detail = resp.json()
-                print(f"detail: {detail}")
-            except Exception: detail = {"error": resp.text}
-            raise HTTPException(status_code=400, detail=detail)
-
-        return {"message": "Reset email sent if the address exists."}
-    except Exception:
-        log.error("[FORGOT_PASSWORD][EXC]\n%s", traceback.format_exc())
-        raise
-
-@router.post("/forgot-password")
-def forgot_password(email: str = Body(..., embed=True)):
-    try:
-        redirect = (EMAIL_REDIRECT_TO_RESET or "").strip() 
-        url = f"{SUPABASE_URL}/auth/v1/recover"
-        if redirect:
-            url += f"?redirect_to={quote(redirect, safe='')}"
-
-        headers = {"apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json"}
-        payload = {"email": email}
-        if redirect:
-            payload["redirect_to"] = redirect  # include in body too
+            payload["redirect_to"] = redirect  # body (some setups expect both)
 
         log.info("[FORGOT] url=%s payload=%s", url, payload)
         resp = requests.post(url, headers=headers, json=payload, timeout=15)
         log.info("[FORGOT->SUPABASE] status=%s text=%s", resp.status_code, resp.text[:500])
 
         if resp.status_code not in (200, 204):
-            try: detail = resp.json()
-            except Exception: detail = {"error": resp.text}
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = {"error": resp.text}
             raise HTTPException(status_code=400, detail=detail)
 
         return {"message": "Reset email sent if the address exists."}
     except Exception:
         log.error("[FORGOT_PASSWORD][EXC]\n%s", traceback.format_exc())
         raise
+
