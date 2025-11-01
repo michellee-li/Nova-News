@@ -18,16 +18,16 @@ import requests
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("backend")
 
+app = FastAPI()
+
 # --- Load .env from project root (same folder as this file) ---
 ROOT_DIR = Path(__file__).resolve().parent
+PUBLIC_DIR = ROOT_DIR / "public"  
 load_dotenv(dotenv_path=str(ROOT_DIR / ".env"))
 
 SUPABASE_URL = os.getenv("SUPABASE_URL") or ""
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY") or ""
 NEWS_API_KEY = os.getenv("NEWS_API_KEY") or ""
-
-
-app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -88,30 +88,11 @@ def get_news(country: str = "us", pageSize: int = 50):
 # ---- Password reset landing page (for Safari from Supabase email) ----
 # Accept multiple token parameter names: token, token_hash, or code.
 @app.get("/reset-password")
-async def reset_password(
-    request: Request,
-    token: str | None = None,
-    token_hash: str | None = None,
-    code: str | None = None,
-    type: str | None = None,  # not required, but useful for debugging ("recovery")
-):
-    supplied = token or token_hash or code
-    if not supplied:
-        # Don’t render the page without a token—prevents confusion
-        raise HTTPException(status_code=400, detail="Missing token")
-
-    # Render template that runs Supabase JS:
-    #  - exchangeCodeForSession(window.location.href)
-    #  - updateUser({ password })
-    return templates.TemplateResponse(
-        "reset_password.html",
-        {
-            "request": request,
-            "SUPABASE_URL": SUPABASE_URL,
-            "SUPABASE_ANON_KEY": SUPABASE_ANON_KEY,
-            "token": supplied,
-        },
-    )
+def reset_password_page():
+    path = PUBLIC_DIR / "reset_password.html"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="reset_password.html not found")
+    return FileResponse(str(path), media_type="text/html")
 
 @app.get("/support", response_class=HTMLResponse)
 async def support():
@@ -202,21 +183,24 @@ async def support():
     """
     return HTMLResponse(content=html, status_code=200)
 
-# Serve the /static path (optional but handy)
-app.mount(
-    "/static",
-    StaticFiles(directory=str(ROOT_DIR / "public")),
-    name="static",
-)
+# Mount only if the directory exists (avoid import-time crash on Render)
+if PUBLIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(PUBLIC_DIR)), name="static")
+else:
+    import logging
+    logging.warning("Public dir missing: %s", PUBLIC_DIR)
 
 # Serve privacy page at a clean URL Apple can access
 @app.get("/privacy")
 def privacy():
-    return FileResponse(
-        str(ROOT_DIR / "public" / "privacy.html"),
-        media_type="text/html"
-    )
+    path = PUBLIC_DIR / "privacy.html"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="privacy.html not found")
+    return FileResponse(str(path), media_type="text/html")
 
 @app.get("/confirm")
 def confirm():
-    return FileResponse(str(ROOT_DIR / "public" / "confirm.html"))
+    path = PUBLIC_DIR / "confirm.html"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="confirm.html not found")
+    return FileResponse(str(path), media_type="text/html")
