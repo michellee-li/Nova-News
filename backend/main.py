@@ -203,11 +203,17 @@ async def support():
     return HTMLResponse(content=html, status_code=200)
 
 # Serve the /static path (optional but handy)
-app.mount("/static", StaticFiles(directory="public"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=str(ROOT_DIR / "public")),
+    name="static",
+)
 
 # Serve privacy page at a clean URL Apple can access
 @app.get("/privacy")
 def privacy():
-    # FileResponse sets correct headers & content-type
-    return FileResponse("public/privacy.html", media_type="text/html")
+    return FileResponse(
+        str(ROOT_DIR / "public" / "privacy.html"),
+        media_type="text/html"
+    )
 
