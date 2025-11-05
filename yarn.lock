@@ -1940,7 +1940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-async-storage/async-storage@npm:^2.2.0":
+"@react-native-async-storage/async-storage@npm:2.2.0":
   version: 2.2.0
   resolution: "@react-native-async-storage/async-storage@npm:2.2.0"
   dependencies:
@@ -7352,7 +7352,7 @@ __metadata:
     "@babel/core": "npm:^7.25.2"
     "@babel/runtime": "npm:^7"
     "@expo/vector-icons": "npm:15.0.3"
-    "@react-native-async-storage/async-storage": "npm:^2.2.0"
+    "@react-native-async-storage/async-storage": "npm:2.2.0"
     "@react-native-picker/picker": "npm:2.11.1"
     "@react-navigation/bottom-tabs": "npm:^7.0.0"
     "@react-navigation/elements": "npm:^2.0.0"
