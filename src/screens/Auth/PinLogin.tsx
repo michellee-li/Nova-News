@@ -1,7 +1,6 @@
 // src/screens/Auth/PinLogin.tsx
 import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
 import { StackScreenProps } from '@react-navigation/stack';
-import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -14,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { supabase } from '../../../lib/supabase';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 
 type Props = StackScreenProps<RootStackParamList, 'PinLogin'>;
@@ -44,46 +44,15 @@ export default function PinLogin({ navigation }: Props) {
 
     try {
       setBusy(true);
-      const path = mode === 'signup' ? '/api/register' : '/api/login';
-
-      const res = await fetch(`${resolvedBase}${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: e, password: p }),
-      });
-
-      // Safely try to parse JSON, but don't rely on shape
-      let data: any = null;
-      try {
-        data = await res.json();
-      } catch {
-        // ignore parse errors; we'll fall back to friendly copy
-      }
-
-      if (!res.ok) {
-        // ---- FRIENDLY MESSAGES ONLY (no raw server JSON) ----
-        const lower = (s: unknown) =>
-          (typeof s === 'string' ? s : String(s ?? '')).toLowerCase();
-
-        const code = lower(data?.error_code || data?.code || data?.error);
-        const detail = lower(data?.detail || data?.message || data?.msg);
-
-        let userMsg =
-          'We couldn’t sign you in. Please check your email and password and try again.';
-
-        // Common invalid-credentials patterns
-        if (code.includes('invalid_credentials') || detail.includes('invalid login credentials')) {
-          userMsg = 'Email or password is incorrect.';
-        } else if (res.status === 429) {
-          userMsg = 'Too many attempts. Please wait a moment and try again.';
-        } else if (res.status >= 500) {
-          userMsg = 'Server is having trouble right now. Please try again shortly.';
-        }
-
-        throw new Error(userMsg);
-      }
 
       if (mode === 'signup') {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: e,
+          password: p,
+        });
+
+        if (signUpError) throw signUpError;
+
         Alert.alert(
           'Account created',
           'Check your email for a confirmation link, then log in.'
@@ -92,14 +61,23 @@ export default function PinLogin({ navigation }: Props) {
         return;
       }
 
-      const token = data?.access_token ?? data?.data?.access_token;
-      if (token) await SecureStore.setItemAsync('ACCESS_TOKEN', token);
-      await SecureStore.setItemAsync('USER_EMAIL', e);
+      // LOGIN FLOW
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: e,
+        password: p,
+      });
 
-      navigation.replace('Onboarding');
+      if (error) {
+        Alert.alert('Authentication failed', error.message);
+        return;
+      }
+
+      // Success — Supabase session is now set and persisted
+      console.log('LOGIN session user:', data.session?.user?.id);
+      Alert.alert('Welcome back', 'Login successful.');
+      navigation.replace('Onboarding'); // or PrivateTabs
     } catch (err: any) {
-      // Will show only the sanitized message from above
-      Alert.alert('Authentication failed', err?.message ?? 'Please try again.');
+      Alert.alert('Login failed', err?.message ?? 'Please try again.');
     } finally {
       setBusy(false);
     }
