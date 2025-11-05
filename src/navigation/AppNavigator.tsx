@@ -1,14 +1,13 @@
 // src/navigation/AppNavigator.tsx
 import { createStackNavigator } from '@react-navigation/stack';
-import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-const PinLogin        = React.lazy(() => import('../screens/Auth/PinLogin'));
-const NewsList        = React.lazy(() => import('../screens/NewsFeed/NewsList'));
-const WebviewScreen   = React.lazy(() => import('../screens/NewsFeed/WebviewScreen'));
-const OnboardingNavLL = React.lazy(() => import('./OnboardingNavigator'));
-const PrivateTabs     = React.lazy(() => import('./PrivateTabs'));
-const ResetPassword   = React.lazy(() => import('../screens/Auth/ResetPassword'));
+import PinLogin from '../screens/Auth/PinLogin';
+import ResetPassword from '../screens/Auth/ResetPassword';
+import NewsList from '../screens/NewsFeed/NewsList';
+import WebviewScreen from '../screens/NewsFeed/WebviewScreen';
+import OnboardingNavLL from './OnboardingNavigator';
+import PrivateTabs from './PrivateTabs';
 
 export type RootStackParamList = {
   PinLogin:      undefined;
@@ -32,60 +31,16 @@ function Fallback() {
 export default function AppNavigator() {
   return (
     <Stack.Navigator initialRouteName="NewsList" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="NewsList">
-        {(props) => (
-          <React.Suspense fallback={<Fallback />}>
-            <NewsList {...props} />
-          </React.Suspense>
-        )}
-      </Stack.Screen>
-
-      <Stack.Screen name="PinLogin">
-        {(props) => (
-          <React.Suspense fallback={<Fallback />}>
-            <PinLogin {...props} />
-          </React.Suspense>
-        )}
-      </Stack.Screen>
-
-      <Stack.Screen
-        name="WebviewScreen"
-        options={{ headerShown: true, title: 'Article' }}
-      >
-        {(props) => (
-          <React.Suspense fallback={<Fallback />}>
-            <WebviewScreen {...props} />
-          </React.Suspense>
-        )}
-      </Stack.Screen>
-
-      {/* ✅ No props for PrivateTabs */}
-      <Stack.Screen name="PrivateTabs">
-        {() => (
-          <React.Suspense fallback={<Fallback />}>
-            <PrivateTabs />
-          </React.Suspense>
-        )}
-      </Stack.Screen>
-
-      <Stack.Screen name="Onboarding" options={{ headerShown: false }}>
-        {({ navigation }) => (
-          <React.Suspense fallback={<Fallback />}>
-            <OnboardingNavLL onFinish={() => navigation.replace('PrivateTabs')} />
-          </React.Suspense>
-        )}
-      </Stack.Screen>
-
-      <Stack.Screen
-        name="ResetPassword"
-        options={{ headerShown: true, title: 'Reset Password' }}
-      >
-        {(props) => (
-          <React.Suspense fallback={<Fallback />}>
-            <ResetPassword {...props} />
-          </React.Suspense>
-        )}
-      </Stack.Screen>
+    <Stack.Screen name="NewsList" component={NewsList} />
+    <Stack.Screen name="PinLogin" component={PinLogin} />
+    <Stack.Screen name="WebviewScreen" component={WebviewScreen} options={{ headerShown: true, title: 'Article' }} />
+    <Stack.Screen name="PrivateTabs" component={PrivateTabs} />
+    <Stack.Screen name="Onboarding" options={{ headerShown: false }}>
+      {({ navigation }) => (
+        <OnboardingNavLL onFinish={() => navigation.replace('PrivateTabs')} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: true, title: 'Reset Password' }} />
     </Stack.Navigator>
   );
 }

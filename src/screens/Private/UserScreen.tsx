@@ -28,19 +28,16 @@ export default function UserScreen() {
   const canDelete = ack && confirm.trim().toUpperCase() === "DELETE" && !loading;
 
   const getAccessToken = async (): Promise<string | null> => {
-    // Try normal session first
-    const { data: s1, error: e1 } = await supabase.auth.getSession();
-    if (!e1 && s1?.session?.access_token) return s1.session.access_token;
+    const s1 = await supabase.auth.getSession();
+    if (s1.data?.session?.access_token) return s1.data.session.access_token;
 
-    // Try refreshing session (handles cold starts/expired tokens)
-    const { data: s2, error: e2 } = await supabase.auth.refreshSession();
-    if (!e2 && s2?.session?.access_token) return s2.session.access_token;
+    const s2 = await supabase.auth.refreshSession();
+    if (s2.data?.session?.access_token) return s2.data.session.access_token;
 
-    // As a final check, ensure we actually have a user
-    const { data: u, error: eu } = await supabase.auth.getUser();
-    if (!eu && u?.user) {
-      const { data: s3 } = await supabase.auth.getSession();
-      return s3?.session?.access_token ?? null;
+    const u = await supabase.auth.getUser();
+    if (u.data?.user) {
+      const s3 = await supabase.auth.getSession();
+      return s3.data?.session?.access_token ?? null;
     }
     return null;
   };
