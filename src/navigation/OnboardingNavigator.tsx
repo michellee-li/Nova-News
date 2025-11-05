@@ -4,10 +4,10 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 // ⬇️ Lazy-load each screen
-const WelcomeScreen       = React.lazy(() => import('../screens/Onboarding/WelcomeScreen'));
-const FavoriteYearScreen  = React.lazy(() => import('../screens/Onboarding/FavoriteYearScreen'));
-const BackupYearScreen    = React.lazy(() => import('../screens/Onboarding/BackupYearScreen'));
-const FinishScreen        = React.lazy(() => import('../screens/Onboarding/FinishScreen'));
+import BackupYearScreen from '../screens/Onboarding/BackupYearScreen';
+import FavoriteYearScreen from '../screens/Onboarding/FavoriteYearScreen';
+import FinishScreen from '../screens/Onboarding/FinishScreen';
+import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 
 export type OnboardingParamList = {
   Welcome:      undefined;
