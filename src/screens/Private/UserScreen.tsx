@@ -28,19 +28,29 @@ export default function UserScreen() {
   const canDelete = ack && confirm.trim().toUpperCase() === "DELETE" && !loading;
 
   const getAccessToken = async (): Promise<string | null> => {
-    const s1 = await supabase.auth.getSession();
-    if (s1.data?.session?.access_token) return s1.data.session.access_token;
+    try {
+      const s1 = await supabase.auth.getSession();
+      console.log('getSession:', !!s1.data?.session, s1.data?.session?.user?.id);
+      if (s1.data?.session?.access_token) return s1.data.session.access_token;
 
-    const s2 = await supabase.auth.refreshSession();
-    if (s2.data?.session?.access_token) return s2.data.session.access_token;
+      const s2 = await supabase.auth.refreshSession();
+      console.log('refreshSession:', !!s2.data?.session, s2.error);
+      if (s2.data?.session?.access_token) return s2.data.session.access_token;
 
-    const u = await supabase.auth.getUser();
-    if (u.data?.user) {
-      const s3 = await supabase.auth.getSession();
-      return s3.data?.session?.access_token ?? null;
+      const u = await supabase.auth.getUser();
+      console.log('getUser:', !!u.data?.user, u.data?.user?.id, u.error);
+      if (u.data?.user) {
+        const s3 = await supabase.auth.getSession();
+        console.log('getSession after getUser:', !!s3.data?.session);
+        return s3.data?.session?.access_token ?? null;
+      }
+      return null;
+    } catch (e) {
+      console.log('getAccessToken error:', e);
+      return null;
     }
-    return null;
   };
+
 
   const handleDelete = async () => {
     if (!canDelete) return;
