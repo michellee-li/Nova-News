@@ -2273,79 +2273,64 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@supabase/auth-js@npm:2.78.0":
-  version: 2.78.0
-  resolution: "@supabase/auth-js@npm:2.78.0"
+"@supabase/auth-js@npm:2.79.0":
+  version: 2.79.0
+  resolution: "@supabase/auth-js@npm:2.79.0"
   dependencies:
-    "@supabase/node-fetch": "npm:2.6.15"
     tslib: "npm:2.8.1"
-  checksum: 10c0/5a14578f2d784964c49c0cf70af411f0a3d0d3923eaa8e72cdb3b111d25c8168caf90ff9a888723ce79e0df1c2fe191ab15d1f4041e2ef9502772be625f31f3b
+  checksum: 10c0/f5357985c1289226534a5077c29f6ae4ff1013afe06cd912c225f8a739b0f61915f8c5d98a01d7492bad3c397784891473d0431796af04c23ecfe4bb6b673344
   languageName: node
   linkType: hard
 
-"@supabase/functions-js@npm:2.78.0":
-  version: 2.78.0
-  resolution: "@supabase/functions-js@npm:2.78.0"
+"@supabase/functions-js@npm:2.79.0":
+  version: 2.79.0
+  resolution: "@supabase/functions-js@npm:2.79.0"
   dependencies:
-    "@supabase/node-fetch": "npm:2.6.15"
     tslib: "npm:2.8.1"
-  checksum: 10c0/166343624054b80019327f871a34520bfd72794830bc4c2f49a1075703f788426c14c064e02688a5d0511663f24c8b37804451d34975c1b66a061b8cd20d08e8
+  checksum: 10c0/3fc4d5ae313131c42afd9b299aaaf750d431f7f355f841ccdc490319f1f0d74d17e21317490ef17efc3272608bd346845e0b2b4fd99eb81c8634b0dc42127f0a
   languageName: node
   linkType: hard
 
-"@supabase/node-fetch@npm:2.6.15":
-  version: 2.6.15
-  resolution: "@supabase/node-fetch@npm:2.6.15"
+"@supabase/postgrest-js@npm:2.79.0":
+  version: 2.79.0
+  resolution: "@supabase/postgrest-js@npm:2.79.0"
   dependencies:
-    whatwg-url: "npm:^5.0.0"
-  checksum: 10c0/98d25cab2eba53c93c59e730d52d50065b1a7fe216c65224471e83e2064ebd45ae51ad09cb39ec263c3cb59e3d41870fc2e789ea2e9587480d7ba212b85daf38
-  languageName: node
-  linkType: hard
-
-"@supabase/postgrest-js@npm:2.78.0":
-  version: 2.78.0
-  resolution: "@supabase/postgrest-js@npm:2.78.0"
-  dependencies:
-    "@supabase/node-fetch": "npm:2.6.15"
     tslib: "npm:2.8.1"
-  checksum: 10c0/5f426389f6d8aa11924038b622b9953dbc87cdd92fb98b7eb4112b5fd9c556ca7d2a4b718784550031a1376823f9ba9ac4ac62c444167c245e4df86959d133e3
+  checksum: 10c0/e5ab441940fdc85852a28658dd1740691cafeb1588cc806f388879cbd825dc60160140fea2e18f7e60b5ed2ea69f6da12ea1d8e96b9555edcad578b5c5baf5ef
   languageName: node
   linkType: hard
 
-"@supabase/realtime-js@npm:2.78.0":
-  version: 2.78.0
-  resolution: "@supabase/realtime-js@npm:2.78.0"
+"@supabase/realtime-js@npm:2.79.0":
+  version: 2.79.0
+  resolution: "@supabase/realtime-js@npm:2.79.0"
   dependencies:
-    "@supabase/node-fetch": "npm:2.6.15"
     "@types/phoenix": "npm:^1.6.6"
     "@types/ws": "npm:^8.18.1"
     tslib: "npm:2.8.1"
     ws: "npm:^8.18.2"
-  checksum: 10c0/20c2a7079d5edfdffdf496151226c89aa3f475b5b860d5bd370a7a73b3adb1f36b62ad496705c035b002e66401e638a706efc4b22ae21a7ddeee8c9644f9e8c3
+  checksum: 10c0/b4eb6f23a00cbf83c9e6068d74645ca7a97a0e0596ddc30f165396f22ed23c6644bb4ee06252282f9ec742eba6bb628ad4e8dbd9455b565e189c1897c8e75f67
   languageName: node
   linkType: hard
 
-"@supabase/storage-js@npm:2.78.0":
-  version: 2.78.0
-  resolution: "@supabase/storage-js@npm:2.78.0"
+"@supabase/storage-js@npm:2.79.0":
+  version: 2.79.0
+  resolution: "@supabase/storage-js@npm:2.79.0"
   dependencies:
-    "@supabase/node-fetch": "npm:2.6.15"
     tslib: "npm:2.8.1"
-  checksum: 10c0/678196e401bf89695c53f084c04d9110029ab5da82a366ce91cd3a61d7a9f9039a9e7de8c964ac253caec41db896c47aa51be04489ea69932fd9061cc086730d
+  checksum: 10c0/81aa33df6c52dacddc459ee1b2f1f23f572a47b4aa2cc63b9031f4570135c54d97733c905c0b50dd38e653c307a3ad7d1a008fd02477d1f9c3ca5c8aa5c289ee
   languageName: node
   linkType: hard
 
 "@supabase/supabase-js@npm:^2.75.0":
-  version: 2.78.0
-  resolution: "@supabase/supabase-js@npm:2.78.0"
+  version: 2.79.0
+  resolution: "@supabase/supabase-js@npm:2.79.0"
   dependencies:
-    "@supabase/auth-js": "npm:2.78.0"
-    "@supabase/functions-js": "npm:2.78.0"
-    "@supabase/node-fetch": "npm:2.6.15"
-    "@supabase/postgrest-js": "npm:2.78.0"
-    "@supabase/realtime-js": "npm:2.78.0"
-    "@supabase/storage-js": "npm:2.78.0"
-  checksum: 10c0/d36e62c50f901d37c9055fce5524761cdd3b75f23582247ba83e90ff5a7eb101e81d5de212076c6b48ebe9c9c6ee4ae7868b6f02a4b5c4e2ff0a215e59d346da
+    "@supabase/auth-js": "npm:2.79.0"
+    "@supabase/functions-js": "npm:2.79.0"
+    "@supabase/postgrest-js": "npm:2.79.0"
+    "@supabase/realtime-js": "npm:2.79.0"
+    "@supabase/storage-js": "npm:2.79.0"
+  checksum: 10c0/372543a636652fad2f19ba2927b546aeade8a2dc947678aa88337bde1d5aa4adc38bd0dad7c2f0d6265eef758da6ad36ba6b1f47c7c3924bd53ee943246edaa2
   languageName: node
   linkType: hard
 
@@ -3345,11 +3330,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.8.19":
-  version: 2.8.23
-  resolution: "baseline-browser-mapping@npm:2.8.23"
+  version: 2.8.24
+  resolution: "baseline-browser-mapping@npm:2.8.24"
   bin:
     baseline-browser-mapping: dist/cli.js
-  checksum: 10c0/5a63c1c241d288e5c79aa32a1cbea335b5af899172161aa9f9701a67c5b9b55ea3b3945a70a842385374627dde1de27504641bc95257d8c2e81f0c593c719121
+  checksum: 10c0/8add2f6fe6312134032caa1d385d07a939e25594566672a57d2eef2a53592252b8b56348cdd991d73d78741033d16a28d3da96ef3fc9f4d0bb9ea268124a53c3
   languageName: node
   linkType: hard
 
@@ -4625,29 +4610,29 @@ __metadata:
   linkType: hard
 
 "expo-dev-client@npm:~6.0.16":
-  version: 6.0.16
-  resolution: "expo-dev-client@npm:6.0.16"
+  version: 6.0.17
+  resolution: "expo-dev-client@npm:6.0.17"
   dependencies:
-    expo-dev-launcher: "npm:6.0.16"
-    expo-dev-menu: "npm:7.0.15"
+    expo-dev-launcher: "npm:6.0.17"
+    expo-dev-menu: "npm:7.0.16"
     expo-dev-menu-interface: "npm:2.0.0"
     expo-manifests: "npm:~1.0.8"
     expo-updates-interface: "npm:~2.0.0"
   peerDependencies:
     expo: "*"
-  checksum: 10c0/400d7d640ca876538e093da153f96d96f0c6d38b515faef9f2e4ceb2a297bb879bc0cbaf2c504452979e080d71825af9960e729ca526ed4e86f331cfaf4e53fc
+  checksum: 10c0/aa3a323834d325267777f36d4756436824a6792490ef30cac57b2965ed836452eb519a19e539c7006ea3234fe6c4642bcdb7bf46e895db0149f88ed0d5e352b2
   languageName: node
   linkType: hard
 
-"expo-dev-launcher@npm:6.0.16":
-  version: 6.0.16
-  resolution: "expo-dev-launcher@npm:6.0.16"
+"expo-dev-launcher@npm:6.0.17":
+  version: 6.0.17
+  resolution: "expo-dev-launcher@npm:6.0.17"
   dependencies:
-    expo-dev-menu: "npm:7.0.15"
+    expo-dev-menu: "npm:7.0.16"
     expo-manifests: "npm:~1.0.8"
   peerDependencies:
     expo: "*"
-  checksum: 10c0/ec84911b2e722caf4fd4d0c9febe85ec1a443ce0742faa6407c36db21532be522da8094b57d8c1fa55c878af834df0345347b09bad0a4d56b9e564b61e233ec0
+  checksum: 10c0/6a4a389b7c9efc4c4c99bd27f3a20808f84661ddc64f8bde93acea55c936b766639a7b81641a4069cc6d2bfedaacb3979e2cbb8f9d4563977f91290ef86e19e1
   languageName: node
   linkType: hard
 
@@ -4660,14 +4645,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-menu@npm:7.0.15":
-  version: 7.0.15
-  resolution: "expo-dev-menu@npm:7.0.15"
+"expo-dev-menu@npm:7.0.16":
+  version: 7.0.16
+  resolution: "expo-dev-menu@npm:7.0.16"
   dependencies:
     expo-dev-menu-interface: "npm:2.0.0"
   peerDependencies:
     expo: "*"
-  checksum: 10c0/31fc22d7b4d9627bd8c2da89e9f3e0042eb8628d768231747671184ad146498068274ab1f797bd311becb5b08848750cbd33a28cb1931609aa08cfaa2f25a4ec
+  checksum: 10c0/3e2e23e304327959cfe6641623a690967e9e0c1715dc6ad1d12a47fad7b61f45f6c2273993354d85d396504f8a5cf16fe7d338aa166cd74daecf78409833f5a2
   languageName: node
   linkType: hard
 
@@ -8547,9 +8532,9 @@ __metadata:
   linkType: hard
 
 "sax@npm:>=0.6.0":
-  version: 1.4.2
-  resolution: "sax@npm:1.4.2"
-  checksum: 10c0/1009e9c5d677a6e256ab6295d486c092c6e70aeb54abe7040fee02af72f51e464ca3708da347a7779fa56ad895f03c36eb7d3b20454df3a7a0fcf8b358eef6fa
+  version: 1.4.3
+  resolution: "sax@npm:1.4.3"
+  checksum: 10c0/45bba07561d93f184a8686e1a543418ced8c844b994fbe45cc49d5cd2fc8ac7ec949dae38565e35e388ad0cca2b75997a29b6857c927bf6553da3f80ed0e4e62
   languageName: node
   linkType: hard
 
