@@ -1,5 +1,5 @@
 # user.py
-import os, requests, logging, traceback
+import os, requests, logging, traceback, sys
 from urllib.parse import quote
 from fastapi import APIRouter, HTTPException, Body
 from backend.models import RegisterRequest, LoginRequest
@@ -29,6 +29,19 @@ if not SUPABASE_URL or not SUPABASE_ANON_KEY:
 if not SERVICE_KEY:
     raise HTTPException(status_code=500, detail="Server misconfigured: service role key missing")
     # log.warning("[ENV] SUPABASE_SERVICE_ROLE_KEY not set; delete-account will fail for admin ops")
+
+def _jwt_segments(tok: str | None):
+    try:
+        return len(tok.split(".")) if tok else None
+    except Exception:
+        return None
+
+print(
+    "SERVICE_KEY present:", bool(SERVICE_KEY),
+    "segments:", _jwt_segments(SERVICE_KEY),
+    "prefix:", (SERVICE_KEY or "")[:12],
+    file=sys.stderr
+)
 
 def _sb_headers_admin():
     if not SERVICE_KEY:
