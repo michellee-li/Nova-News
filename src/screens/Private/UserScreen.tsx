@@ -31,31 +31,18 @@ export default function UserScreen() {
     try {
       const s1 = await supabase.auth.getSession();
       console.log('getSession:', !!s1.data?.session, s1.data?.session?.user?.id);
-      if (s1.data?.session?.access_token) {
-        const t = s1.data.session.access_token;
-        console.log('access token preview (s1)',
-          t?.split?.('.').length, t?.slice(0, 25));
-        return t;
-      }
+      if (s1.data?.session?.access_token) return s1.data.session.access_token;
 
       const s2 = await supabase.auth.refreshSession();
       console.log('refreshSession:', !!s2.data?.session, s2.error);
-      if (s2.data?.session?.access_token) {
-        const t = s2.data.session.access_token;
-        console.log('access token preview (s2)',
-          t?.split?.('.').length, t?.slice(0, 25));
-        return t;
-      }
+      if (s2.data?.session?.access_token) return s2.data.session.access_token;
 
       const u = await supabase.auth.getUser();
       console.log('getUser:', !!u.data?.user, u.data?.user?.id, u.error);
       if (u.data?.user) {
         const s3 = await supabase.auth.getSession();
         console.log('getSession after getUser:', !!s3.data?.session);
-        const t = s3.data?.session?.access_token ?? null;
-        console.log('access token preview (s3)',
-          t?.split?.('.').length, t?.slice(0, 25));
-        return t;
+        return s3.data?.session?.access_token ?? null;
       }
       return null;
     } catch (e) {
@@ -71,10 +58,9 @@ export default function UserScreen() {
       setLoading(true);
 
       const token = await getAccessToken();
-      console.log('[DEL] token preview:', token?.slice(0, 20), '… segments:', (token?.split('.') ?? []).length);
-      if (!token || token.split('.').length !== 3) {
-
-        Alert.alert('Error', 'Auth token missing. Please sign in again.');
+      if (!token) {
+        setLoading(false);
+        Alert.alert("Error", "You must be logged in.");
         return;
       }
 
