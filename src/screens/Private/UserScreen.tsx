@@ -43,7 +43,7 @@ export default function UserScreen() {
       if (s2.data?.session?.access_token) {
         const t = s2.data.session.access_token;
         const segs = typeof t === 'string' ? t.split('.').length : null;
-        console.log('access token preview (s1)', segs, t?.slice(0, 25));
+        console.log('access token preview (s2)', segs, t?.slice(0, 25));
         return t;
       }
 
@@ -54,7 +54,7 @@ export default function UserScreen() {
         console.log('getSession after getUser:', !!s3.data?.session);
         const t = s3.data?.session?.access_token ?? null;
         const segs = typeof t === 'string' ? t.split('.').length : null;
-        console.log('access token preview (s1)', segs, t?.slice(0, 25));
+        console.log('access token preview (s3)', segs, t?.slice(0, 25));
         return t;
       }
       return null;
