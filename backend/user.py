@@ -27,9 +27,12 @@ if not SUPABASE_URL or not SUPABASE_ANON_KEY:
     raise RuntimeError("Set SUPABASE_URL and SUPABASE_ANON_KEY in your .env")
 
 if not SERVICE_KEY:
-    log.warning("[ENV] SUPABASE_SERVICE_ROLE_KEY not set; delete-account will fail for admin ops")
+    raise HTTPException(status_code=500, detail="Server misconfigured: service role key missing")
+    # log.warning("[ENV] SUPABASE_SERVICE_ROLE_KEY not set; delete-account will fail for admin ops")
 
 def _sb_headers_admin():
+    if not SERVICE_KEY:
+        raise RuntimeError("SUPABASE_SERVICE_ROLE_KEY is required for admin operations")
     return {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": f"Bearer {SERVICE_KEY}",
