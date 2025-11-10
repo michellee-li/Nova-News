@@ -31,6 +31,15 @@ if not (SUPABASE_URL and SUPABASE_SERVICE_ROLE):
 if not OPENAI_API_KEY:
     log.warning("[WARN] OPENAI_API_KEY missing; will fall back to a simple heuristic plan")
 
+def _admin_headers():
+    if not SUPABASE_SERVICE_ROLE or not SUPABASE_SERVICE_ROLE.startswith("eyJ"):
+        raise RuntimeError("SUPABASE_SERVICE_ROLE_KEY must be the eyJ… service role JWT")
+    return {
+        "apikey": SUPABASE_SERVICE_ROLE,                     # service role
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE}",  # service role
+        "Content-Type": "application/json",
+    }
+
 router = APIRouter()
 
 class Entry(BaseModel):
@@ -55,7 +64,7 @@ def admin_get_user_id_by_email(email: str) -> str:
     }
     payload = {"p_email": email}  # Parameter for the function
     try:
-        r = requests.post(url, headers=headers, json=payload, timeout=15)
+        r = requests.post(url, headers=_admin_headers(), json={"p_email": email}, timeout=15)
         r.raise_for_status()  # Raises HTTPError for 4xx/5xx
         data = r.json()
         # RPC returns a single value (UUID string), not an array
@@ -76,7 +85,7 @@ def db_get_budget(user_id: str):
     headers = {
         "apikey": SUPABASE_SERVICE_ROLE,
     }
-    r = requests.get(url, headers=headers, timeout=15)
+    r = requests.get(url, headers=_admin_headers(), timeout=15)
     if r.status_code != 200:
         raise HTTPException(status_code=500, detail=f"Select failed: {r.text}")
     rows = r.json()
@@ -87,8 +96,7 @@ def db_upsert_budget(user_id: str, us_state: str, goal: str,
                      entries_dicts: list, plan_text: str):
     url = f"{SUPABASE_URL}/rest/v1/budgets"
     headers = {
-        "apikey": SUPABASE_SERVICE_ROLE,
-															 
+        "apikey": SUPABASE_SERVICE_ROLE,															 
         "Content-Type": "application/json",
         "Prefer": "return=representation",  # Removed resolution=merge-duplicates
     }
