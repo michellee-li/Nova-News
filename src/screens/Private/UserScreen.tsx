@@ -31,18 +31,31 @@ export default function UserScreen() {
     try {
       const s1 = await supabase.auth.getSession();
       console.log('getSession:', !!s1.data?.session, s1.data?.session?.user?.id);
-      if (s1.data?.session?.access_token) return s1.data.session.access_token;
+      if (s1.data?.session?.access_token) {
+        const t = s1.data.session.access_token;
+        const segs = typeof t === 'string' ? t.split('.').length : null;
+        console.log('access token preview (s1)', segs, t?.slice(0, 25));
+        return t;
+      }
 
       const s2 = await supabase.auth.refreshSession();
       console.log('refreshSession:', !!s2.data?.session, s2.error);
-      if (s2.data?.session?.access_token) return s2.data.session.access_token;
+      if (s2.data?.session?.access_token) {
+        const t = s2.data.session.access_token;
+        const segs = typeof t === 'string' ? t.split('.').length : null;
+        console.log('access token preview (s1)', segs, t?.slice(0, 25));
+        return t;
+      }
 
       const u = await supabase.auth.getUser();
       console.log('getUser:', !!u.data?.user, u.data?.user?.id, u.error);
       if (u.data?.user) {
         const s3 = await supabase.auth.getSession();
         console.log('getSession after getUser:', !!s3.data?.session);
-        return s3.data?.session?.access_token ?? null;
+        const t = s3.data?.session?.access_token ?? null;
+        const segs = typeof t === 'string' ? t.split('.').length : null;
+        console.log('access token preview (s1)', segs, t?.slice(0, 25));
+        return t;
       }
       return null;
     } catch (e) {
