@@ -27,7 +27,18 @@
         "NSCameraUsageDescription": "Allow taking a profile photo.",
         "NSPhotoLibraryUsageDescription": "Allow selecting a photo for your profile.",
         "NSLocationWhenInUseUsageDescription": "Show nearby resources using your location.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSAppTransportSecurity": {
+          "NSExceptionDomains": {
+            "onrender.com": {
+              "NSIncludesSubdomains": true,
+              "NSTemporaryExceptionAllowsInsecureHTTPLoads": false,
+              "NSTemporaryExceptionAllowsInsecureHTTPSLoads": true
+            }
+          }
+        }
+      }
+    }
       }
     },
     "updates": {
