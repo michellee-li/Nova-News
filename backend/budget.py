@@ -96,7 +96,8 @@ def db_upsert_budget(user_id: str, us_state: str, goal: str,
                      entries_dicts: list, plan_text: str):
     url = f"{SUPABASE_URL}/rest/v1/budgets"
     headers = {
-        "apikey": SUPABASE_SERVICE_ROLE,															 
+        "apikey": SUPABASE_SERVICE_ROLE,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE}",														 
         "Content-Type": "application/json",
         "Prefer": "return=representation",  # Removed resolution=merge-duplicates
     }
