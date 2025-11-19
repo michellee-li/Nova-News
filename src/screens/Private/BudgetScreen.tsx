@@ -17,6 +17,7 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from "../../../lib/supabase";
 
 type EntryType = 'Income' | 'Expense';
 type Entry = { id: string; type: EntryType; amount: string; category?: string };
@@ -60,11 +61,29 @@ export default function BudgetScreen() {
   useEffect(() => {
     (async () => {
       try {
-        const storedEmail = await SecureStore.getItemAsync('USER_EMAIL');
+        // 1) Try Supabase auth first
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.log('[BudgetScreen] getUser error', error);
+        }
+
+        const emailFromAuth = data?.user?.email ?? null;
+
+        // 2) Try SecureStore
+        let storedEmail = await SecureStore.getItemAsync('USER_EMAIL');
+
+        // 3) If nothing in SecureStore but Supabase has an email, cache it
+        if (!storedEmail && emailFromAuth) {
+          await SecureStore.setItemAsync('USER_EMAIL', emailFromAuth);
+          storedEmail = emailFromAuth;
+        }
+
+        // 4) If still no email, user is really not logged in
         if (!storedEmail) {
           Alert.alert('Not logged in', 'Please log in to load your saved budget plan.');
           return;
         }
+
         setEmail(storedEmail);
         await fetchSavedPlan(storedEmail);
       } catch (e) {
@@ -72,6 +91,7 @@ export default function BudgetScreen() {
       }
     })();
   }, []);
+
 
   const totals = useMemo(() => {
     const inc = entries.reduce((s, e) => s + (e.type === 'Income' ? Number(e.amount || 0) : 0), 0);

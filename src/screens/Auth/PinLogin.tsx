@@ -1,6 +1,7 @@
 // src/screens/Auth/PinLogin.tsx
 import { BASE_URL_ANDROID, BASE_URL_IOS } from '@env';
 import { StackScreenProps } from '@react-navigation/stack';
+import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -15,6 +16,7 @@ import {
 } from 'react-native';
 import { supabase } from '../../../lib/supabase';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+
 
 type Props = StackScreenProps<RootStackParamList, 'PinLogin'>;
 type Mode = 'login' | 'signup';
@@ -74,7 +76,8 @@ export default function PinLogin({ navigation }: Props) {
 
       // Success — Supabase session is now set and persisted
       console.log('LOGIN session user:', data.session?.user?.id);
-      // Alert.alert('Welcome back', 'Login successful.');
+      // STORE USER EMAIL HERE
+      await SecureStore.setItemAsync('USER_EMAIL', e);
       navigation.replace('Onboarding'); // or PrivateTabs
     } catch (err: any) {
       Alert.alert('Login failed', err?.message ?? 'Please try again.');
