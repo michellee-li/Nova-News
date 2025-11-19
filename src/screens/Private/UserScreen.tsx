@@ -206,7 +206,7 @@ export default function UserScreen() {
             >
               <View
                 style={{
-                  maxHeight: "85%",
+                  maxHeight: "95%",
                   backgroundColor: "white",
                   padding: 16,
                   borderTopLeftRadius: 16,
@@ -241,6 +241,7 @@ export default function UserScreen() {
                     blurOnSubmit
                     style={{
                       marginTop: 6,
+                      marginBottom: 20,
                       borderWidth: 1,
                       borderColor: "#DDD",
                       borderRadius: 10,
