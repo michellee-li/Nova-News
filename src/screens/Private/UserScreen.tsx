@@ -4,8 +4,7 @@ import {
     ActivityIndicator,
     Alert,
     Keyboard,
-    KeyboardAvoidingView,
-    Modal,
+    KeyboardAvoidingView, Linking, Modal,
     Platform,
     ScrollView,
     Switch,
@@ -13,7 +12,7 @@ import {
     TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    View,
+    View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../lib/supabase"; // your existing client
@@ -140,12 +139,10 @@ export default function UserScreen() {
       {/* Card list */}
       <View style={{ paddingHorizontal: 16, paddingTop: 8, flex: 1 }}>
         <Section title="Manage Account">
-          <Row label="Change Password" onPress={() => Alert.alert("Change Password", "Open reset-password flow")} />
           <Row label="Two-Factor Authentication" onPress={() => Alert.alert("2FA", "Coming soon")} />
         </Section>
 
         <Section title="Data & Privacy">
-          <Row label="Export My Data" onPress={() => Alert.alert("Export", "We’ll email you a copy of your data")} />
           <View
             style={{
               backgroundColor: "white",
@@ -183,9 +180,14 @@ export default function UserScreen() {
         </Section>
 
         <Section title="About">
-          <Row label="Terms of Use" onPress={() => Alert.alert("Terms", "Open webview")} />
-          <Row label="Privacy Policy" onPress={() => Alert.alert("Privacy", "Open webview")} />
-          <Row label="Support" onPress={() => Alert.alert("Support", "Open support page")} />
+            <Row
+                label="Privacy Policy"
+                onPress={() => Linking.openURL("https://nova-news.onrender.com/privacy")}
+            />
+            <Row
+                label="Support"
+                onPress={() => Linking.openURL("https://nova-news.onrender.com/support")}
+            />
         </Section>
       </View>
 
