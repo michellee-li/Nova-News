@@ -74,7 +74,7 @@ export default function PinLogin({ navigation }: Props) {
 
       // Success — Supabase session is now set and persisted
       console.log('LOGIN session user:', data.session?.user?.id);
-      Alert.alert('Welcome back', 'Login successful.');
+      // Alert.alert('Welcome back', 'Login successful.');
       navigation.replace('Onboarding'); // or PrivateTabs
     } catch (err: any) {
       Alert.alert('Login failed', err?.message ?? 'Please try again.');
