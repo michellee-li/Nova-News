@@ -56,9 +56,34 @@ app.include_router(user_router, prefix="/api")
 app.include_router(gpt_router, prefix="/api")
 app.include_router(budget_router, prefix="/api/budget", tags=["budget"])
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def root():
-    return {"message": "NovaNews API is running"}
+    return """
+    <!doctype html>
+    <html>
+      <head>
+        <title>Nova News – Email Confirmed</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+          body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                 background: #f7f2ea; margin: 0; display: flex; align-items: center;
+                 justify-content: center; min-height: 100vh; }
+          .card { background: #fff; padding: 24px 28px; border-radius: 16px;
+                  box-shadow: 0 8px 24px rgba(0,0,0,0.06); max-width: 420px; text-align: center; }
+          h1 { margin: 0 0 12px; font-size: 24px; }
+          p  { margin: 0 0 4px; color: #444; }
+          .sub { font-size: 14px; color: #777; margin-top: 8px; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>Email confirmed 🎉</h1>
+          <p>Your Nova News account is now verified.</p>
+          <p class="sub">You can return to the app and sign in.</p>
+        </div>
+      </body>
+    </html>
+    """
 
 # Simple health check
 @app.get("/api/health")
