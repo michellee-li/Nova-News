@@ -1,29 +1,25 @@
 // App.tsx (TEMPORARY DEBUG VERSION)
 
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { RootStackParamList } from './src/navigation/AppNavigator';
+import NewsList from './src/screens/NewsFeed/NewsList';
+
+const Stack = createStackNavigator<RootStackParamList>();           
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>🔥 Root App Test Screen 🔥</Text>
-      <Text style={{ marginTop: 8 }}>If you see this, JS is running.</Text>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="NewsList">
+          <Stack.Screen name="NewsList" component={NewsList} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
-  },
-  text: {
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-});
-
 
 
 // import 'react-native-gesture-handler';
