@@ -20,8 +20,8 @@
 // src/navigation/AppNavigator.tsx (TEMP VERSION)
 
 import { createStackNavigator } from '@react-navigation/stack';
+import PinLogin from '../screens/Auth/PinLogin';
 import NewsList from '../screens/NewsFeed/NewsList';
-// import { RootStackParamList } from './AppNavigatorTypesOrWherever'; // adjust to your actual types
 
 export type RootStackParamList = {
   PinLogin:      undefined;
@@ -36,8 +36,9 @@ const RootStack = createStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (
-    <RootStack.Navigator initialRouteName="NewsList">
+    <RootStack.Navigator initialRouteName="NewsList" screenOptions={{ headerShown: false }}>
       <RootStack.Screen name="NewsList" component={NewsList} />
+      <RootStack.Screen name="PinLogin" component={PinLogin} />
     </RootStack.Navigator>
   );
 }
