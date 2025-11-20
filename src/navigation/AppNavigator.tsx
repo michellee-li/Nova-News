@@ -1,3 +1,22 @@
+// src/navigation/AppNavigator.tsx (TEMP VERSION)
+
+// import React from 'react';
+// import { createStackNavigator } from '@react-navigation/stack';
+// import NewsList from '../screens/NewsFeed/NewsList';
+// import { RootStackParamList } from './AppNavigatorTypesOrWherever'; // adjust to your actual types
+
+// const RootStack = createStackNavigator<RootStackParamList>();
+
+// export default function AppNavigator() {
+//   return (
+//     <RootStack.Navigator initialRouteName="NewsList">
+//       <RootStack.Screen name="NewsList" component={NewsList} />
+//     </RootStack.Navigator>
+//   );
+// }
+
+
+
 // src/navigation/AppNavigator.tsx
 import { createStackNavigator } from '@react-navigation/stack';
 import { ActivityIndicator, View } from 'react-native';
