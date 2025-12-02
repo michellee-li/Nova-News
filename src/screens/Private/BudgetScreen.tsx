@@ -62,6 +62,7 @@ export default function BudgetScreen() {
     (async () => {
       try {
         // 1) Try Supabase auth first
+        if (!supabase) return;
         const { data, error } = await supabase.auth.getUser();
         if (error) {
           console.log('[BudgetScreen] getUser error', error);

@@ -31,6 +31,7 @@ useEffect(() => {
 
     if (accessToken && refreshToken) {
       // Set session from the access token
+      if (!supabase) return;
       const { data, error } = await supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
@@ -57,6 +58,7 @@ useEffect(() => {
     }
     try {
       setBusy(true);
+      if (!supabase) return;
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: 'https://nova-news.onrender.com/reset-password',
       });

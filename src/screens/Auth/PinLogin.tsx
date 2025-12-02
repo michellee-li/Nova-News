@@ -48,6 +48,7 @@ export default function PinLogin({ navigation }: Props) {
       setBusy(true);
 
       if (mode === 'signup') {
+        if (!supabase) return;
         const { error: signUpError } = await supabase.auth.signUp({
           email: e,
           password: p,
@@ -64,6 +65,7 @@ export default function PinLogin({ navigation }: Props) {
       }
 
       // LOGIN FLOW
+      if (!supabase) return;
       const { data, error } = await supabase.auth.signInWithPassword({
         email: e,
         password: p,

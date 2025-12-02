@@ -1,18 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Keyboard,
-    KeyboardAvoidingView, Linking, Modal,
-    Platform,
-    ScrollView,
-    Switch,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView, Linking, Modal,
+  Platform,
+  ScrollView,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../lib/supabase"; // your existing client
@@ -28,6 +28,7 @@ export default function UserScreen() {
 
   const getAccessToken = async (): Promise<string | null> => {
     try {
+      if (!supabase) return null;
       const s1 = await supabase.auth.getSession();
       console.log('getSession:', !!s1.data?.session, s1.data?.session?.user?.id);
       if (s1.data?.session?.access_token) {
@@ -37,6 +38,7 @@ export default function UserScreen() {
         return t;
       }
 
+      if (!supabase) return null;
       const s2 = await supabase.auth.refreshSession();
       console.log('refreshSession:', !!s2.data?.session, s2.error);
       if (s2.data?.session?.access_token) {
@@ -46,9 +48,11 @@ export default function UserScreen() {
         return t;
       }
 
+      if (!supabase) return null;
       const u = await supabase.auth.getUser();
       console.log('getUser:', !!u.data?.user, u.data?.user?.id, u.error);
       if (u.data?.user) {
+        if (!supabase) return null;
         const s3 = await supabase.auth.getSession();
         console.log('getSession after getUser:', !!s3.data?.session);
         const t = s3.data?.session?.access_token ?? null;
@@ -97,6 +101,7 @@ export default function UserScreen() {
       }
 
       // Sign out locally and go “home”
+      if (!supabase) return;
       await supabase.auth.signOut();
       setLoading(false);
       setOpen(false);
@@ -128,7 +133,7 @@ export default function UserScreen() {
           onPress={() => {
             // @ts-ignore
             nav.navigate("NewsList");
-            setTimeout(() => supabase.auth.signOut(), 3500);
+            setTimeout(() => supabase?.auth.signOut(), 3500);
           }}
           style={{ backgroundColor: "#FF6B6B", paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20 }}
         >
