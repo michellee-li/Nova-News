@@ -22,6 +22,11 @@ import { supabase } from "../../../lib/supabase";
 type EntryType = 'Income' | 'Expense';
 type Entry = { id: string; type: EntryType; amount: string; category?: string };
 
+const ENTRY_CATEGORIES: Record<EntryType, string[]> = {
+  Income: ['Salary', 'Child Support', 'Benefits', 'Other'],
+  Expense: ['Rent', 'Grocery', 'Utility', 'Transportation', 'Healthcare', 'Other'],
+};
+
 const US_STATES = [
   'AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MI','MN','MO','MS','MT','NC','ND','NE','NH','NJ','NM','NV','NY','OH','OK','OR','PA','PR','RI','SC','SD','TN','TX','UT','VA','VT','WA','WI','WV','WY'
 ];
@@ -46,7 +51,7 @@ export default function BudgetScreen() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [entryType, setEntryType] = useState<EntryType>('Income');
   const [entryAmount, setEntryAmount] = useState<string>('');
-  const [entryCategory, setEntryCategory] = useState<string>('');
+  const [entryCategory, setEntryCategory] = useState<string>(ENTRY_CATEGORIES.Income[0]);
   const [usState, setUsState] = useState<string>('TX');
   const [goal, setGoal] = useState<string>('');
   const [plan, setPlan] = useState<string>('');
@@ -100,6 +105,13 @@ export default function BudgetScreen() {
     return { inc, exp, net: inc - exp };
   }, [entries]);
 
+  const changeEntryType = (type: EntryType) => {
+    if (type !== entryType) {
+      setEntryType(type);
+      setEntryCategory(ENTRY_CATEGORIES[type][0]);
+    }
+  };
+
   const addEntry = () => {
     const v = Number(entryAmount);
     if (!entryAmount || isNaN(v) || v <= 0) {
@@ -110,11 +122,11 @@ export default function BudgetScreen() {
       id: String(Date.now()),
       type: entryType,
       amount: entryAmount,
-      category: (entryCategory || '').trim() || (entryType === 'Income' ? 'Income' : 'Expense'),
+      category: entryCategory,
     };
     setEntries(prev => [newEntry, ...prev]);
     setEntryAmount('');
-    setEntryCategory('');
+    setEntryCategory(ENTRY_CATEGORIES[entryType][0]);
   };
 
   const removeEntry = (id: string) => {
@@ -278,14 +290,14 @@ export default function BudgetScreen() {
             {/* Segmented Control */}
             <View style={styles.segmentRow}>
               <Pressable
-                onPress={() => setEntryType('Income')}
+                onPress={() => changeEntryType('Income')}
                 style={[styles.segmentBtn, entryType === 'Income' && styles.segmentBtnActive]}
               >
                 <Feather name="arrow-down-circle" size={16} color={entryType === 'Income' ? PALETTE.accent : PALETTE.text} />
                 <Text style={[styles.segmentText, entryType === 'Income' && { color: PALETTE.accent }]}>Income</Text>
               </Pressable>
               <Pressable
-                onPress={() => setEntryType('Expense')}
+                onPress={() => changeEntryType('Expense')}
                 style={[styles.segmentBtn, entryType === 'Expense' && styles.segmentBtnActive]}
               >
                 <Feather name="arrow-up-circle" size={16} color={entryType === 'Expense' ? PALETTE.accent : PALETTE.text} />
@@ -297,12 +309,20 @@ export default function BudgetScreen() {
             <View style={styles.fieldsRow}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.smallLabel}>Category</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={entryType === 'Income' ? 'e.g., Paycheck, Child Support' : 'e.g., Rent, Groceries'}
-                  value={entryCategory}
-                  onChangeText={setEntryCategory}
-                />
+                <View style={styles.pickerWrap}>
+                  <Picker
+                    selectedValue={entryCategory}
+                    onValueChange={setEntryCategory}
+                    mode="dropdown"
+                    accessibilityLabel={`${entryType} category`}
+                    style={{ color: PALETTE.text }}
+                    itemStyle={{ fontSize: 14 }}
+                  >
+                    {ENTRY_CATEGORIES[entryType].map(category => (
+                      <Picker.Item key={category} label={category} value={category} />
+                    ))}
+                  </Picker>
+                </View>
               </View>
               <View style={{ width: 12 }} />
               <View style={{ flex: 1 }}>
